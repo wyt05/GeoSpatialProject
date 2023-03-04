@@ -1,0 +1,26 @@
+---
+title: "Prototyping V1"
+format: html
+editor: visual
+---
+
+## Load the packages
+
+```{r}
+pacman::p_load(tidyverse, sf, tmap, sfdep, ggplot2)
+```
+
+Load the Singapore Map (NOTES: We only want the PLN_AREA_N)
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial", 
+                  layer = "MP14_SUBZONE_WEB_PL")
+```
+
+```{r}
+resale_file_2017 <- read.csv("data/aspatial/resale-flat-prices-based-on-registration-date-from-jan-2017-onwards.csv")
+```
+
+```{r}
+#unique(mpsz[PLN_AREA_N])
+```
