@@ -99,5 +99,3 @@ After we have finish wrangling the data, we would need to see how correlated the
 #### Step 3: Geographically Weighted Regression Models
 
 ### Story Boarding
-
-### 
