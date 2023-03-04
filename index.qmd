@@ -1,11 +1,21 @@
 ---
-title: "This is a test"
+title: "IS445 Project"
+author: "Hao Xian and Wen Yang"
+date: "4 March 2023"
+date-modified: '`r Sys.Date()`'
+format: html
+number-sections: true
+execute: 
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  
+editor: visual
 ---
 
-This is a Quarto website.
+## Group Members:
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Tan Wen Yang and Hao Xian
 
-```{r}
-1 + 1
-```
+## Summary:

@@ -1,9 +1,9 @@
 ---
-title: "About"
+title: "Project Proposal Summary"
 ---
 
-About this site
+# Summary of our Project Proposal
 
 ```{r}
-1 + 1
+
 ```
