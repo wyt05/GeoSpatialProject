@@ -92,10 +92,22 @@ After we have cleaned up the data, we would need to create relevant fields in th
 
 Lastly, we would need to make the necessary computation to calculate all the relevant fields such as distance from our identified factors as well.
 
-#### Step 2:  EDA
+#### Step 2: EDA
 
 After we have finish wrangling the data, we would need to see how correlated the factors are with the location of the HDB. We are trying to see if the factors
 
 #### Step 3: Geographically Weighted Regression Models
 
 ### Story Boarding
+
+#### HOME PAGE
+
+![](images/photo_2023-03-04_17-46-25.jpg)
+
+**EDA Page (Visualize EDA Data)**
+
+![](images/photo_2023-03-04_17-52-34.jpg)
+
+**Prediction Page (Shows the prediction)**
+
+![](images/photo_2023-03-04_17-52-51.jpg)
