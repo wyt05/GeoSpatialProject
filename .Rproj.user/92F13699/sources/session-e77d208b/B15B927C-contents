@@ -9,7 +9,3 @@ editor: visual
 ```{r}
 pacman::p_load(tidyverse, sf, tmap, sfdep, ggplot2)
 ```
-
-```{r}
-
-```
