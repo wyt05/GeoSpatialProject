@@ -1,0 +1,65 @@
+---
+title: "IS445 Project"
+author: "Hao Xian and Wen Yang"
+date: "4 March 2023"
+date-modified: '`r Sys.Date()`'
+format: html
+number-sections: true
+execute: 
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  
+editor: visual
+---
+
+## Motivation of the Project
+
+The price of the resale HDB market has always been on the rise and have seen tremendous growth over the years. With HDB being an integral part of Singaporeans' life, it would make sense that the affordability of the HDB is extremely important to the everyday Singaporeans. However, with new such as ["**HDB resale prices accelerate in Jan as million-dollar deals surge by 42%: SRX, 99.co"**](https://www.businesstimes.com.sg/property/hdb-resale-prices-accelerate-jan-million-dollar-deals-surge-42-srx-99co)or [**"HDB resale prices rise 2.3% in Q4, slowest increase in 2022"**](https://www.straitstimes.com/singapore/housing/hdb-resale-prices-rise-23-in-q4-slowest-increase-in-2022#:~:text=Resale%20prices%20grew%20by%2010.4,latest%20round%20of%20property%20curbs.)**.** All this news only serve to highlight the importance of resale flat and the ever growing concern that as time passes, HDB will become more and more unaffordable to us.
+
+## Goals of the Project
+
+Now that we have properly establish what our Motivation is we would like to discuss the main goals of the project.
+
+1.  Our first goals is to find if there is any correlation between the different amenities HDB has an effect on the price of the resale flat. The data set can be found in the link provided
+
+    -   [**Rail Station:**](https://dataportal.asia/dataset/203030733_master-plan-2019-rail-station-name-layer)It is commonly believed that the price of the resale flat is closely related to how close the HDB is to our Rail Station, as being close to the rail station means it is more convenient to travel. We would expect that the closer the rail is to the hdb, the higher the value
+
+    -   [**Hawker Centers:**](https://dataportal.asia/dataset/192501037_hawker-centres)Hawker Centers are where almost all Singaporeans get their food from. It would make sense that we expect that the closer the Flat is to the Hawker Center the more expensive the flat will be.
+
+    -   [**Preschool (Childcare/Kindergarten):**](https://dataportal.asia/dataset/203030733_pre-schools-location)Childcare center is especially important to parents with young children and we believe that parents are willing to pay more to have one nearby. It would make sense that we expect that the closer the Flat is to the pre-school the more expensive the flat will be.
+
+    -   [**Malls:**](https://dataportal.asia/dataset/203030733_master-plan-2019-sdcp-park-mall-promenade-and-public-link)Hawker Centers are where almost all Singaporeans do their favorite pastime . It would make sense that we expect that the closer the Flat is to the Malls the more expensive the flat will be.
+
+    -   [**Mosquito Hotspots:**](https://dataportal.asia/dataset/192501037_areas-with-high-aedes-population)We found this data set but we are not sure if there is any correlation. We would expect that since Mosquito spreads dengue fever, a high population will make the flat cheaper.
+
+2.  Our Second Goal is to make use of the above factors to predict the value of hdb resale flat for a given area given using geographically weighted regression models.
+
+With the goals in mind, we hope that we are able to provide an **interactive map** of the geographical region with the price of the resale HDB and provide an reference value to the buyer on whether the asking price of the HDB is reasonable or not given the factors of the HDB Flat. This we hope will all users to make better decisions when purchasing a resale of HDB.
+
+## Relevant Related Works
+
+HDB itself has a map
+
+1.  [**HDB Interactive Map**](https://services2.hdb.gov.sg/web/fi10/emap.html)**: T**his map provides information of where the HDB is and provide an interactivity for the user to see details of the HDB. We are hoping to build something similar to this, but given that our goal is different, there will be some changes in the data shown
+
+2.  [[**HDB Resale Flat Prices:**]{.underline}](https://services2.hdb.gov.sg/webapp/BB33RTIS/) This website shows the price of the resale HDB Flat of a given area. This only shows the price of transacted HDB Flat and we are making use of data that this app uses to predict the price.
+
+3.  [[**Predict the Selling Price of HDB Resale Flats**]{.underline}](https://towardsdatascience.com/predict-the-selling-price-of-hdb-resale-flats-50530391a845): This article by Kok Jim Meng, shows how he manages to predict the prices of HDB Flat information based on the following characteristic
+
+    # **Problem Statement**
+
+    There are multiple factors affecting the selling price of HDB resale flats in Singapore. Therefore, by using linear regression, I am interested in finding out how the selling price of a HDB resale flat changes based on its following characteristics in this mini exercise:
+
+    -   its distance to the Central Business District (CBD)
+
+    -   its distance to the nearest MRT station
+
+    -   its flat size
+
+    -   its floor level
+
+    -   its remaining years of lease
+
+    The resources for this mini exercise can be found on [my GitHub](https://github.com/jimmeng-kok-2017/hdb_resale_lr_predict) which includes the dataset, and the Python notebook files --- data preprocessing, and data processing (including the building of linear regression).
