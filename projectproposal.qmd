@@ -22,7 +22,7 @@ The price of the resale HDB market has always been on the rise and have seen tre
 
 Now that we have properly establish what our Motivation is we would like to discuss the main goals of the project.
 
-1.  Our first goals is to find if there is any correlation between the different amenities HDB has an effect on the price of the resale flat. The data set can be found in the link provided
+1.  Our first goals is to find if there is any correlation between the different amenities HDB has an effect on the price of the resale flat. The data set can be found in the link provided:
 
     -   [**Rail Station:**](https://dataportal.asia/dataset/203030733_master-plan-2019-rail-station-name-layer)It is commonly believed that the price of the resale flat is closely related to how close the HDB is to our Rail Station, as being close to the rail station means it is more convenient to travel. We would expect that the closer the rail is to the hdb, the higher the value
 
@@ -36,30 +36,68 @@ Now that we have properly establish what our Motivation is we would like to disc
 
 2.  Our Second Goal is to make use of the above factors to predict the value of hdb resale flat for a given area given using geographically weighted regression models.
 
+    -   [**HDB Resale Data set:**](https://data.gov.sg/dataset/resale-flat-prices)Contains all the relevant data about HDB Resale Flat, such as floor areas and resale price.
+
 With the goals in mind, we hope that we are able to provide an **interactive map** of the geographical region with the price of the resale HDB and provide an reference value to the buyer on whether the asking price of the HDB is reasonable or not given the factors of the HDB Flat. This we hope will all users to make better decisions when purchasing a resale of HDB.
 
 ## Relevant Related Works
-
-HDB itself has a map
 
 1.  [**HDB Interactive Map**](https://services2.hdb.gov.sg/web/fi10/emap.html)**: T**his map provides information of where the HDB is and provide an interactivity for the user to see details of the HDB. We are hoping to build something similar to this, but given that our goal is different, there will be some changes in the data shown
 
 2.  [[**HDB Resale Flat Prices:**]{.underline}](https://services2.hdb.gov.sg/webapp/BB33RTIS/) This website shows the price of the resale HDB Flat of a given area. This only shows the price of transacted HDB Flat and we are making use of data that this app uses to predict the price.
 
-3.  [[**Predict the Selling Price of HDB Resale Flats**]{.underline}](https://towardsdatascience.com/predict-the-selling-price-of-hdb-resale-flats-50530391a845): This article by Kok Jim Meng, shows how he manages to predict the prices of HDB Flat information based on the following characteristic
+3.  [[**Predict the Selling Price of HDB Resale Flats**]{.underline}](https://towardsdatascience.com/predict-the-selling-price-of-hdb-resale-flats-50530391a845): This article by Kok Jim Meng, shows how he manages to predict the prices of HDB Flat information. We will be performing a deep dive to find out more about this.
 
-    # **Problem Statement**
+#### Predicting the Selling Price of HDB Resale Flats By Kok Jim Meng.
 
-    There are multiple factors affecting the selling price of HDB resale flats in Singapore. Therefore, by using linear regression, I am interested in finding out how the selling price of a HDB resale flat changes based on its following characteristics in this mini exercise:
+The first difference that I have noted is that all his code is coded in python where as we will be coding in R. The first thing he did was to identify the characteristicts he wish to dive deeper into, namely:
 
-    -   its distance to the Central Business District (CBD)
+-   its distance to the Central Business District (CBD)
 
-    -   its distance to the nearest MRT station
+-   its distance to the nearest MRT station
 
-    -   its flat size
+-   its flat size
 
-    -   its floor level
+-   its floor level
 
-    -   its remaining years of lease
+-   its remaining years of lease
 
-    The resources for this mini exercise can be found on [my GitHub](https://github.com/jimmeng-kok-2017/hdb_resale_lr_predict) which includes the dataset, and the Python notebook files --- data preprocessing, and data processing (including the building of linear regression).
+All his data set is only from one source, from the HDB Resale Data Set. To calculate the distance to the central business district, he made use of onemap api to calculate the distance there.
+
+Based on his calculation, he found the following that floor size has the highest impact on the resale flat, and the distance to the nearest MRT station having the lowest strength.
+
+His conclusion is that:
+
+-   For every 1 metre further away from the CBD, the selling price drops by \$18.12
+
+-   For every 1 metre further away from the nearest MRT station, the selling price drops by \$49.04
+
+-   For every 1 square metre of flat size increases, the selling price rises by \$4353.13
+
+-   For every 1 remaining year lease, the selling price rises by \$4079.25
+
+-   For every rise in 1 floor, the selling price rises by \$5065.95
+
+We can take note of his conclusion in our work itself.
+
+### Approach to Solve the Problem
+
+Now that we has establish our problem, here is our predicted issue
+
+#### Step 1: Data Wrangling (6th March to 12th March)
+
+This is expected to take a large chunk of our time, as we have data set in multiple files. We will need to remove unnecessary data and also filter out all the relevant fields as not all fields is necessary in our analysis. We would need to remove all the outer islands from the map of Singapore as well.
+
+After we have cleaned up the data, we would need to create relevant fields in the maps HDB data set does not have any geospatial data, and we would need to make use of the relevant R packages to detect the coordinates of the HDB for display as well. Other data sets might not also have such data as well and we would need to fixed the issues as well.
+
+Lastly, we would need to make the necessary computation to calculate all the relevant fields such as distance from our identified factors as well.
+
+#### Step 2:  EDA
+
+After we have finish wrangling the data, we would need to see how correlated the factors are with the location of the HDB. We are trying to see if the factors
+
+#### Step 3: Geographically Weighted Regression Models
+
+### Story Boarding
+
+### 
