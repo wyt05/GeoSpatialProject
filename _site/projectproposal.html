@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Hao Xian and Wen Yang">
+<meta name="author" content="Hao Xian, Wen Yang and Pierre Jean Michel">
 <meta name="dcterms.date" content="2023-03-04">
 
 <title>IS415 GeoSpatial - IS445 Project</title>
@@ -89,6 +89,10 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link active" href="./projectproposal.html" aria-current="page">
  <span class="menu-text">Project Proposal</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./Prototyping/prototyping_v1.html">
+ <span class="menu-text">Prototype</span></a>
+  </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
           </div> <!-- /navcollapse -->
@@ -106,10 +110,19 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#motivation-of-the-project" id="toc-motivation-of-the-project" class="nav-link active" data-scroll-target="#motivation-of-the-project"><span class="toc-section-number">1</span>  Motivation of the Project</a></li>
   <li><a href="#goals-of-the-project" id="toc-goals-of-the-project" class="nav-link" data-scroll-target="#goals-of-the-project"><span class="toc-section-number">2</span>  Goals of the Project</a></li>
-  <li><a href="#relevant-related-works" id="toc-relevant-related-works" class="nav-link" data-scroll-target="#relevant-related-works"><span class="toc-section-number">3</span>  Relevant Related Works</a>
+  <li><a href="#relevant-related-works" id="toc-relevant-related-works" class="nav-link" data-scroll-target="#relevant-related-works"><span class="toc-section-number">3</span>  Relevant Related Works</a></li>
+  <li><a href="#approach-to-solve-the-problem" id="toc-approach-to-solve-the-problem" class="nav-link" data-scroll-target="#approach-to-solve-the-problem"><span class="toc-section-number">4</span>  Approach to Solve the Problem</a>
   <ul class="collapse">
-  <li><a href="#approach-to-solve-the-problem" id="toc-approach-to-solve-the-problem" class="nav-link" data-scroll-target="#approach-to-solve-the-problem"><span class="toc-section-number">3.1</span>  Approach to Solve the Problem</a></li>
-  <li><a href="#story-boarding" id="toc-story-boarding" class="nav-link" data-scroll-target="#story-boarding"><span class="toc-section-number">3.2</span>  Story Boarding</a></li>
+  <li><a href="#step-1-data-wrangling-6th-march-to-12th-march" id="toc-step-1-data-wrangling-6th-march-to-12th-march" class="nav-link" data-scroll-target="#step-1-data-wrangling-6th-march-to-12th-march"><span class="toc-section-number">4.1</span>  Step 1: Data Wrangling (6th March to 12th March)</a></li>
+  <li><a href="#step-2-eda-13th-march-to-2nd-april" id="toc-step-2-eda-13th-march-to-2nd-april" class="nav-link" data-scroll-target="#step-2-eda-13th-march-to-2nd-april"><span class="toc-section-number">4.2</span>  Step 2: EDA (13th March to 2nd April)</a></li>
+  <li><a href="#step-3-geographically-weighted-regression-models-2nd-april-to-16th-april" id="toc-step-3-geographically-weighted-regression-models-2nd-april-to-16th-april" class="nav-link" data-scroll-target="#step-3-geographically-weighted-regression-models-2nd-april-to-16th-april"><span class="toc-section-number">4.3</span>  Step 3: Geographically Weighted Regression Models (2nd April to 16th April)</a></li>
+  <li><a href="#time-line" id="toc-time-line" class="nav-link" data-scroll-target="#time-line"><span class="toc-section-number">4.4</span>  Time Line</a></li>
+  </ul></li>
+  <li><a href="#story-boarding" id="toc-story-boarding" class="nav-link" data-scroll-target="#story-boarding"><span class="toc-section-number">5</span>  Story Boarding</a>
+  <ul class="collapse">
+  <li><a href="#home-page" id="toc-home-page" class="nav-link" data-scroll-target="#home-page"><span class="toc-section-number">5.1</span>  HOME PAGE</a></li>
+  <li><a href="#eda-page-visualize-eda-data" id="toc-eda-page-visualize-eda-data" class="nav-link" data-scroll-target="#eda-page-visualize-eda-data"><span class="toc-section-number">5.2</span>  <strong>EDA Page (Visualize EDA Data)</strong></a></li>
+  <li><a href="#prediction-page-shows-the-prediction" id="toc-prediction-page-shows-the-prediction" class="nav-link" data-scroll-target="#prediction-page-shows-the-prediction"><span class="toc-section-number">5.3</span>  <strong>Prediction Page (Shows the prediction)</strong></a></li>
   </ul></li>
   </ul>
 </nav>
@@ -129,7 +142,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Hao Xian and Wen Yang </p>
+             <p>Hao Xian, Wen Yang and Pierre Jean Michel </p>
           </div>
   </div>
     
@@ -204,25 +217,55 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p>We can take note of his conclusion in our work itself.</p>
 </section>
-<section id="approach-to-solve-the-problem" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="approach-to-solve-the-problem"><span class="header-section-number">3.1</span> Approach to Solve the Problem</h3>
+</section>
+<section id="approach-to-solve-the-problem" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="approach-to-solve-the-problem"><span class="header-section-number">4</span> Approach to Solve the Problem</h2>
 <p>Now that we has establish our problem, here is our predicted issue</p>
-<section id="step-1-data-wrangling-6th-march-to-12th-march" class="level4" data-number="3.1.1">
-<h4 data-number="3.1.1" class="anchored" data-anchor-id="step-1-data-wrangling-6th-march-to-12th-march"><span class="header-section-number">3.1.1</span> Step 1: Data Wrangling (6th March to 12th March)</h4>
+<section id="step-1-data-wrangling-6th-march-to-12th-march" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="step-1-data-wrangling-6th-march-to-12th-march"><span class="header-section-number">4.1</span> Step 1: Data Wrangling (6th March to 12th March)</h3>
 <p>This is expected to take a large chunk of our time, as we have data set in multiple files. We will need to remove unnecessary data and also filter out all the relevant fields as not all fields is necessary in our analysis. We would need to remove all the outer islands from the map of Singapore as well.</p>
 <p>After we have cleaned up the data, we would need to create relevant fields in the maps HDB data set does not have any geospatial data, and we would need to make use of the relevant R packages to detect the coordinates of the HDB for display as well. Other data sets might not also have such data as well and we would need to fixed the issues as well.</p>
 <p>Lastly, we would need to make the necessary computation to calculate all the relevant fields such as distance from our identified factors as well.</p>
 </section>
-<section id="step-2-eda" class="level4" data-number="3.1.2">
-<h4 data-number="3.1.2" class="anchored" data-anchor-id="step-2-eda"><span class="header-section-number">3.1.2</span> Step 2: EDA</h4>
-<p>After we have finish wrangling the data, we would need to see how correlated the factors are with the location of the HDB. We are trying to see if the factors</p>
+<section id="step-2-eda-13th-march-to-2nd-april" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="step-2-eda-13th-march-to-2nd-april"><span class="header-section-number">4.2</span> Step 2: EDA (13th March to 2nd April)</h3>
+<p>After we have finish wrangling the data, we would need to see how correlated the factors are with the price of the HDB. We will first visualized the relationships of the independent variables first.</p>
+<p>We need to avoid using highly correlated independent variables to prevent the compromised of the quality of the model. Variables that are highly correlated with each other will need to be handled by removing one of the highly correlated models.</p>
+<p>We would need to perform multiple steps in order to ensure that the regression model is the most accurate, namely (all this is reference from <a href="https://r4gdsa.netlify.app/chap13.html#checking-for-multicolinearity">R for Geospatial Data Science and Analytics</a> by Dr Kam Tin Seong):</p>
+<ul>
+<li><p>comprehensive regression output</p></li>
+<li><p>residual diagnostics</p></li>
+<li><p>measures of influence</p></li>
+<li><p>heteroskedasticity tests</p></li>
+<li><p>collinearity diagnostics</p></li>
+<li><p>model fit assessment</p></li>
+<li><p>variable contribution assessment</p></li>
+<li><p>variable selection procedures</p></li>
+</ul>
 </section>
-<section id="step-3-geographically-weighted-regression-models" class="level4" data-number="3.1.3">
-<h4 data-number="3.1.3" class="anchored" data-anchor-id="step-3-geographically-weighted-regression-models"><span class="header-section-number">3.1.3</span> Step 3: Geographically Weighted Regression Models</h4>
+<section id="step-3-geographically-weighted-regression-models-2nd-april-to-16th-april" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="step-3-geographically-weighted-regression-models-2nd-april-to-16th-april"><span class="header-section-number">4.3</span> Step 3: Geographically Weighted Regression Models (2nd April to 16th April)</h3>
+<p>After we have perform our EDA, and selected all the proper variable we can finally build a proper regression model. As we have already perform all the necessary tuning of the model during the EDA steps, we would need to build the model and check out the initial generation of data. We would need to interpret the data into a easier to understand format as well. Once we are done with it, we can start the make the model interactive.</p>
+<p>We will need to convert it into a shiny web app, and allow users to modify the variable so that they may get the prediction based on their selected variables.</p>
+</section>
+<section id="time-line" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="time-line"><span class="header-section-number">4.4</span> Time Line</h3>
+<p><img src="images/Timeline.JPG" class="img-fluid"></p>
 </section>
 </section>
-<section id="story-boarding" class="level3" data-number="3.2">
-<h3 data-number="3.2" class="anchored" data-anchor-id="story-boarding"><span class="header-section-number">3.2</span> Story Boarding</h3>
+<section id="story-boarding" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="story-boarding"><span class="header-section-number">5</span> Story Boarding</h2>
+<section id="home-page" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="home-page"><span class="header-section-number">5.1</span> HOME PAGE</h3>
+<p><img src="images/photo_2023-03-04_17-46-25.jpg" class="img-fluid"></p>
+</section>
+<section id="eda-page-visualize-eda-data" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="eda-page-visualize-eda-data"><span class="header-section-number">5.2</span> <strong>EDA Page (Visualize EDA Data)</strong></h3>
+<p><img src="images/photo_2023-03-04_17-52-34.jpg" class="img-fluid"></p>
+</section>
+<section id="prediction-page-shows-the-prediction" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="prediction-page-shows-the-prediction"><span class="header-section-number">5.3</span> <strong>Prediction Page (Shows the prediction)</strong></h3>
+<p><img src="images/photo_2023-03-04_17-52-51.jpg" class="img-fluid"></p>
 
 
 </section>

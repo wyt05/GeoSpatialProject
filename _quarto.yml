@@ -9,6 +9,8 @@ website:
         text: Home
       - href: projectproposal.qmd
         text: Project Proposal
+      - href: ./Prototyping/prototyping_v1.qmd
+        text: Prototype
 
 format:
   html:

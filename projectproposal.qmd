@@ -1,6 +1,6 @@
 ---
 title: "IS445 Project"
-author: "Hao Xian and Wen Yang"
+author: "Hao Xian, Wen Yang and Pierre Jean Michel"
 date: "4 March 2023"
 date-modified: '`r Sys.Date()`'
 format: html
@@ -80,11 +80,11 @@ His conclusion is that:
 
 We can take note of his conclusion in our work itself.
 
-### Approach to Solve the Problem
+## Approach to Solve the Problem
 
 Now that we has establish our problem, here is our predicted issue
 
-#### Step 1: Data Wrangling (6th March to 12th March)
+### Step 1: Data Wrangling (6th March to 12th March)
 
 This is expected to take a large chunk of our time, as we have data set in multiple files. We will need to remove unnecessary data and also filter out all the relevant fields as not all fields is necessary in our analysis. We would need to remove all the outer islands from the map of Singapore as well.
 
@@ -92,22 +92,50 @@ After we have cleaned up the data, we would need to create relevant fields in th
 
 Lastly, we would need to make the necessary computation to calculate all the relevant fields such as distance from our identified factors as well.
 
-#### Step 2: EDA
+### Step 2: EDA (13th March to 2nd April)
 
-After we have finish wrangling the data, we would need to see how correlated the factors are with the location of the HDB. We are trying to see if the factors
+After we have finish wrangling the data, we would need to see how correlated the factors are with the price of the HDB. We will first visualized the relationships of the independent variables first.
 
-#### Step 3: Geographically Weighted Regression Models
+We need to avoid using highly correlated independent variables to prevent the compromised of the quality of the model. Variables that are highly correlated with each other will need to be handled by removing one of the highly correlated models.
 
-### Story Boarding
+We would need to perform multiple steps in order to ensure that the regression model is the most accurate, namely (all this is reference from [R for Geospatial Data Science and Analytics](https://r4gdsa.netlify.app/chap13.html#checking-for-multicolinearity) by Dr Kam Tin Seong):
 
-#### HOME PAGE
+-   comprehensive regression output
+
+-   residual diagnostics
+
+-   measures of influence
+
+-   heteroskedasticity tests
+
+-   collinearity diagnostics
+
+-   model fit assessment
+
+-   variable contribution assessment
+
+-   variable selection procedures
+
+### Step 3: Geographically Weighted Regression Models (2nd April to 16th April)
+
+After we have perform our EDA, and selected all the proper variable we can finally build a proper regression model. As we have already perform all the necessary tuning of the model during the EDA steps, we would need to build the model and check out the initial generation of data. We would need to interpret the data into a easier to understand format as well. Once we are done with it, we can start the make the model interactive.
+
+We will need to convert it into a shiny web app, and allow users to modify the variable so that they may get the prediction based on their selected variables.
+
+### Time Line
+
+![](images/Timeline.JPG)
+
+## Story Boarding
+
+### HOME PAGE
 
 ![](images/photo_2023-03-04_17-46-25.jpg)
 
-**EDA Page (Visualize EDA Data)**
+### **EDA Page (Visualize EDA Data)**
 
 ![](images/photo_2023-03-04_17-52-34.jpg)
 
-**Prediction Page (Shows the prediction)**
+### **Prediction Page (Shows the prediction)**
 
 ![](images/photo_2023-03-04_17-52-51.jpg)

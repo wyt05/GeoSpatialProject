@@ -1,6 +1,16 @@
 ---
 title: "Prototyping V1"
+author: "Hao Xian, Wen Yang and Pierre Jean Michel"
+date: "4 March 2023"
+date-modified: '`r Sys.Date()`'
 format: html
+number-sections: true
+execute: 
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  
 editor: visual
 ---
 
