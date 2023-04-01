@@ -8,16 +8,16 @@
 #
 
 library(shiny)
+pacman::p_load("shinythemes")
 
 # Define UI for application that draws a histogram
-fluidPage(
+fluidPage( theme=shinytheme("cyborg"),
 
   navbarPage("GWR",
              tabPanel("About Us",
-                      titlePanel("GWR"),
+                      titlePanel("A look into the Hedonic Pricing Models of HDB Flats"),
                       sidebarLayout(
-                        sidebarPanel(titlePanel("A look into the Hedonic Pricing Models of HDB Flats"),
-                                     "A look into the Hedonic Pricing Models of HDB Flats",
+                        sidebarPanel(tags$h3("Group Members"),
                                      tags$ul(
                                        tags$li('Chen Hao Xian'),
                                        tags$li('Pierre Jean Michel Haas'),
@@ -38,6 +38,12 @@ fluidPage(
                                   accurate model that properly models the relationship between location-specific variables
                                   with structural variables in order to better gain an accurate insight into the veracity
                                   of which variables contributes the most to the pricing of the HDB flats, and which does not.",
+                                  titlePanel("App Functions"),
+                                  tags$ol(
+                                    tags$li('Exploratory Data Analysis'),
+                                    tags$li('GWR'),
+                                    tags$li('???'),
+                                  ),
                       ),
                     )
                    ),

@@ -1,0 +1,64 @@
+---
+title: "Project Data-preprocessing"
+date: "11 March 2023"
+author: "GWR"
+execute: 
+  echo: true
+  eval: true
+  warning: false
+editor: visual
+---
+
+We use this to create the dataset for analysis
+
+Packages needed:
+
+```{r}
+pacman::p_load(sf, tidyverse, tmap, onemapsgapi, httr, jsonlite, olsrr, GWmodel, dotenv, matrixStats, spdep, SpatialML, Metrics, ggpubr)
+```
+
+Load in all the shap data
+
+```{r}
+mpsz <- st_read(dsn="data/geospatial", "MPSZ-2019")
+national_boundary <- st_read(dsn="data/geospatial", "CostalOutline")
+childcare <- st_read(dsn="data/geospatial", layer="childcare")
+eldercare <- st_read(dsn="data/geospatial", layer="eldercare")
+hawker_centre <- st_read(dsn="data/geospatial", layer="hawkercentre")
+kindergarten <- st_read(dsn="data/geospatial", layer="kindergartens")
+parks <- st_read(dsn="data/geospatial", layer="nationalparks")
+libraries <- st_read(dsn="data/geospatial", layer="libraries")
+isp_clinics <- st_read(dsn="data/geospatial", layer="moh_isp_clinics")
+tourism <- st_read(dsn="data/geospatial", layer="tourism")
+bus_stop <- st_read(dsn="data/geospatial", layer="BusStop")
+primary_sch <- st_read(dsn="data/geospatial", layer="primary_sch") %>% st_transform(primary_sch, crs=4326)
+top_primary_sch <- st_read(dsn="data/geospatial", layer="top10_pri_sch") %>% st_transform(top_primary_sch, crs=4326)
+```
+
+Convert into 3414
+
+```{r}
+childcare3414 <- st_transform(childcare, crs=3414)
+eldercare3414 <- st_transform(eldercare, crs=3414)
+hawker_centre3414 <- st_transform(hawker_centre, crs=3414)
+kindergarten3414 <- st_transform(kindergarten, crs=3414)
+parks3414 <- st_transform(parks, crs=3414)
+libraries3414 <- st_transform(libraries, crs=3414)
+isp_clinics3414 <- st_transform(isp_clinics, crs=3414)
+tourism3414 <- st_transform(tourism, crs=3414)
+primary_sch_sf_3414 <- st_transform(primary_sch, crs=3414)
+top_primary_sch_sf_3414 <- st_transform(top_primary_sch, crs=3414)
+```
+
+Load shopping malls
+
+```{r}
+shopping_mall <- read_csv("data/aspatial/shopping_mall.csv")
+```
+
+```{r}
+shopping_mall_sf <- st_as_sf(shopping_mall, coords=c("longitude", "latitude"), crs=4326)
+shopping_mall_sf_3414 <- st_transform(shopping_mall_sf, crs=3414)
+```
+
+Convert from CSV to geospatial
