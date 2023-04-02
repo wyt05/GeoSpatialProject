@@ -14,10 +14,10 @@ We use this to create the dataset for analysis
 Packages needed:
 
 ```{r}
-pacman::p_load(sf, tidyverse, tmap, onemapsgapi, httr, jsonlite, olsrr, GWmodel, dotenv, matrixStats, spdep, SpatialML, Metrics, ggpubr)
+pacman::p_load(sf, tidyverse, tmap, onemapsgapi, httr, jsonlite, olsrr, GWmodel, dotenv, matrixStats, spdep, SpatialML, Metrics, ggpubr, units)
 ```
 
-Load in all the shap data
+## Load in all the shape data
 
 ```{r}
 mpsz <- st_read(dsn="data/geospatial", "MPSZ-2019")
@@ -33,6 +33,9 @@ tourism <- st_read(dsn="data/geospatial", layer="tourism")
 bus_stop <- st_read(dsn="data/geospatial", layer="BusStop")
 primary_sch <- st_read(dsn="data/geospatial", layer="primary_sch") %>% st_transform(primary_sch, crs=4326)
 top_primary_sch <- st_read(dsn="data/geospatial", layer="top10_pri_sch") %>% st_transform(top_primary_sch, crs=4326)
+registered_pharmacy <- st_read(dsn="data/geospatial", layer="registered_pharmacy") %>% st_transform(registered_pharmacy, crs=4326)
+CBD <- st_read(dsn="data/geospatial", layer="cbd") %>% st_transform(CBD, crs=4326)
+mrts <- st_read(dsn="data/geospatial", layer="mrt_lrt") %>% st_transform(mrts, crs=4326)
 ```
 
 Convert into 3414
@@ -48,6 +51,10 @@ isp_clinics3414 <- st_transform(isp_clinics, crs=3414)
 tourism3414 <- st_transform(tourism, crs=3414)
 primary_sch_sf_3414 <- st_transform(primary_sch, crs=3414)
 top_primary_sch_sf_3414 <- st_transform(top_primary_sch, crs=3414)
+registered_pharmacy_3414 <- st_transform(registered_pharmacy, crs=3414)
+CBD_3414 <- st_transform(CBD, crs=3414)
+mrts_3414 <- st_transform(mrts, crs=3414)
+bus_stop_3414 <- st_transform(bus_stop, crs=3414)
 ```
 
 Load shopping malls
@@ -61,4 +68,376 @@ shopping_mall_sf <- st_as_sf(shopping_mall, coords=c("longitude", "latitude"), c
 shopping_mall_sf_3414 <- st_transform(shopping_mall_sf, crs=3414)
 ```
 
-Convert from CSV to geospatial
+### Importing SuperMarket Data
+
+```{r}
+supermarket_sf <- st_read("data/geospatial/supermarkets.kml") 
+```
+
+```{r}
+supermarket_sf <- st_zm(supermarket_sf)
+supermarket_sf_3414 <- st_transform(supermarket_sf, crs=3414)
+```
+
+## Importing the Resale Data
+
+```{r}
+resale_flat_full <- read_csv("data/aspatial/resale-flat-prices-from-jan-2017-onwards.csv")
+glimpse(resale_flat_full)
+```
+
+Taking a look at the data we have noticed that the data set contains 11 columns with 148576 observations. They have the following columns: ***months, town, flat_type, block, street_name, storey_range, floor_area_sqm, flat_model, remaining_lease, resale_price.***
+
+## Transforming the Resale Data
+
+::: callout-important
+The following steps are made with reference to: Take Home Exercise 3 done by: NOR AISYAH BINTE AJIT. Check out her work [here](https://aisyahajit2018-is415.netlify.app/posts/2021-11-07-take-home-exercise-3/).
+:::
+
+Now that we have correctly filter out the dataset that we wish to use, we are left with another problem. Lets have a look at our data as an example for me to better illustrate the problem.
+
+```{r}
+head(resale_flat_full)
+```
+
+In our analysis, we are looking at the following key_factors:
+
+-   Area of the unit
+
+-   Floor level
+
+-   Remaining lease
+
+-   Age of the unit
+
+With regards to the key factor. Notice how there are 4 key issues that we need to addressed:
+
+1.  **No geospatial data:** There is no geospatial data for us to plot out the points. This is worrying as the geospatial data is needed for us to perform geographically weighted regression. Fortunately, the data frame provided 2 columns that are critical in retrieving the coordinates of the flat, however it is found in ***2 different columns:*** **block, street_name**. We would need to concatenate them together into to search for their coordinates.
+
+2.  **remaining_lease is recorded as a string:** The remaining leases data is found as a string, when it should be an continuos variable. It is current written as a string currently, which will be treated as a categorical data instead, as such we would need to convert it into the correct format first.
+
+3.  **storey_range is given as a range:** In our dataset, the floor of the exact unique is not given, but rather a range is given this could be a huge potential issue as this would mean thatthe data will treated as a categorical data. We would need to convert it into the correct format first
+
+4.  **No age**: There is no age in our dataset, which would mean that we would need to solve this issue as well.
+
+### Retrieving Postal Codes and Coordinates of the address
+
+As mentioned before, one of the key issues that we would need to perform is to retrieve all the relevant data such as postal code and coordinates of the address that is needed for later analysis.
+
+The steps are as followed:
+
+1.  Combining Block and Street Name to form an address
+
+2.  Filtering out Unique Address
+
+3.  Retrieving coordinates from OneMap.API
+
+4.  Inspecting the Result and Fixing the Issues
+
+#### Step 1: Combining Block and Street Name to form an address
+
+In this step, we will be combining the street_name and block to form an address.
+
+We can make use of the `paste()` function from base R to concatenate the two data together. Find out more [here](https://rdrr.io/r/base/paste.html).
+
+Afterwards, we will placed the data in a new columns called address in the dataframe by using the `mutate()` function from dplyr. Find out more about [here](https://dplyr.tidyverse.org/reference/mutate.html).
+
+```{r}
+resale_flat_full <- resale_flat_full %>%
+  mutate(resale_flat_full, address = paste(block,street_name))
+
+head(resale_flat_full)
+```
+
+#### Step 2: Filtering out Unique Address.
+
+This step is performed in order to minimize the amount of API Call that we need to perform. Furthermore, this also makes it easier for us to see which of the address will result in an error.
+
+We will first get the unique address out first before sorting the data. This can be done with the `sort()` from base R. Find out more [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/sort).
+
+```{r}
+add_list <- sort(unique(resale_flat_full$address))
+```
+
+#### Step 3: Retrieiving Coordinates from OneMap API
+
+To retrieve the coordinates from OneMap API, it will be easier to create a function to retrieve all the coordinate instead. To do so, lets take a deep dive into the OneMap API. Documentation can be found [here](https://www.onemap.gov.sg/docs/#onemap-rest-apis). In this case, we will be making use of the OneMap API search API to retrieve the necessary coordinates.
+
+According to the documentation, the request requires the following.
+
+-   **searchVal:** Keywords entered by user that is used to filter out the results.
+
+-   **returnGeom {Y/N}:** Checks if user wants to return the geometry.
+
+-   **getAddrDetails {Y/N}**: Checks if user wants to return address details for a point.
+
+-   **pageNum**: Specifies the page to retrieve your search results from. *This is optional (We will not be using this in this case)*
+
+A provided example link would be something like this: *https://developers.onemap.sg/commonapi/search?searchVal=revenue&returnGeom=Y&getAddrDetails=Y&pageNum=1*
+
+This will be the following response ***(Taken from OneMap API)***:
+
+![](images/image-2146457878.png)
+
+We are only interested in the LATITUDE and LONGITUDE data in this case.
+
+Now that we understand the API better, we will now create a function that will help us sort through all the data. The following code chunk below does a number of critical steps:
+
+1.  We will create a data frame called postal_coords that will store all the data frame.
+
+2.  We will make use of the `GET()` function from httr package to make a get request call. Find out more [here](https://httr.r-lib.org/reference/GET.html).
+
+3.  We will create a data frame called new role to store all the coordinates
+
+4.  We also need to check the number of responses returned and append to the main data frame accordingly. This is because there are a few conditions to take note of
+
+    -   The number of results can be greater than one or none at all. (*indicated by found* in the JSON).
+
+    -   The results returned can have no postal code (*which we will not consider as valid)*
+
+    -   We will take the first result with a valid postal code as the correct coordinates.
+
+5.  Lastly, we will append the returned response (**new_row**) with the necessary fields to the main dataframe (**postal_coords**) using `rbind()` function of base R package. Find out more [here](https://rdrr.io/r/base/cbind.html).
+
+All of this can be found in the code chunk below:
+
+```{r}
+get_coords <- function(add_list){
+  
+  # Create a data frame to store all retrieved coordinates
+  postal_coords <- data.frame()
+    
+  for (i in add_list){
+    #print(i)
+
+    r <- GET('https://developers.onemap.sg/commonapi/search?',
+           query=list(searchVal=i,
+                     returnGeom='Y',
+                     getAddrDetails='Y'))
+    data <- fromJSON(rawToChar(r$content))
+    found <- data$found
+    res <- data$results
+    
+    # Create a new data frame for each address
+    new_row <- data.frame()
+    
+    # If single result, append 
+    if (found == 1){
+      postal <- res$POSTAL 
+      lat <- res$LATITUDE
+      lng <- res$LONGITUDE
+      new_row <- data.frame(address= i, postal = postal, latitude = lat, longitude = lng)
+    }
+    
+    # If multiple results, drop NIL and append top 1
+    else if (found > 1){
+      # Remove those with NIL as postal
+      res_sub <- res[res$POSTAL != "NIL", ]
+      
+      # Set as NA first if no Postal
+      if (nrow(res_sub) == 0) {
+          new_row <- data.frame(address= i, postal = NA, latitude = NA, longitude = NA)
+      }
+      
+      else{
+        top1 <- head(res_sub, n = 1)
+        postal <- top1$POSTAL 
+        lat <- top1$LATITUDE
+        lng <- top1$LONGITUDE
+        new_row <- data.frame(address= i, postal = postal, latitude = lat, longitude = lng)
+      }
+    }
+
+    else {
+      new_row <- data.frame(address= i, postal = NA, latitude = NA, longitude = NA)
+    }
+    
+    # Add the row
+    postal_coords <- rbind(postal_coords, new_row)
+  }
+  return(postal_coords)
+}
+```
+
+With the function define we can call the function to generate out the data frame of the postal codes.
+
+Please note that this function does take some time to run.
+
+```{r}
+coords <- get_coords(add_list)
+```
+
+#### Step 4: Inspecting the Result and Fixing the Issues
+
+Remember all the issues that we can face when making the api call, we would need to check to make sure that all the data is accounted for.
+
+We can make use of the `is.na()` function to check which street address contains any NA values
+
+```{r}
+coords[(is.na(coords$postal) | is.na(coords$latitude) | is.na(coords$longitude) | coords$postal=="NIL"), ]
+```
+
+Based on the data frame above, we have noticed that there seems to be 2 address with no postal code
+
+-   215 CHOA CHU KANG
+
+-   216 CHOA CHU KANG
+
+When searching directly with OneMap API instead, we found that OneMap API classified them as the same building instead with the results being ***"BLK 216 AND 215 CHOA CHU KANG CENTRAL".*** Furthermore a brief check on the website: property indicates the postal code as
+
+-   [680215](https://www.propertyguru.com.sg/singapore-property-listing/hdb/choa-chu-kang/choa-chu-kang-central_104043/215)
+
+-   [680216](https://www.propertyguru.com.sg/singapore-property-listing/hdb/choa-chu-kang/choa-chu-kang-central_104043/216)
+
+We shall proceed with keeping them as the same as there is the latitude and longitude data.
+
+### Transforming Remaining Lease
+
+In this section, we will be transforming the remaining lease into an integer.
+
+First, we will split the remaining lease into years and months columns for calculation. To do so, we will make use of `str_sub()` function from tidyverse. Find out more [here](https://stringr.tidyverse.org/reference/str_sub.html).
+
+we will convert the string into an integer using the `as.integer()` function from base R. Find out more [here](https://rdrr.io/r/base/integer.html).
+
+```{r}
+resale_flat_full <- resale_flat_full %>%
+  mutate(resale_flat_full, remaining_lease_yr = as.integer(str_sub(remaining_lease, 0, 2))) %>%
+  mutate(resale_flat_full, remaining_lease_mth = as.integer(str_sub(remaining_lease, 9, 11)))
+```
+
+We will then convert the NA values of the remaining_lease_mth columns into 0. We can make use of the `is.na()` function from base R. Find out more [here](https://rdrr.io/r/base/NA.html).
+
+Followed by changing the remaining_lease_yr into months.
+
+Finally, we can sum the two columns together with `rowSums()` function from base R. Find out more [here](https://rdrr.io/r/base/colSums.html).
+
+```{r}
+resale_flat_full$remaining_lease_mth[is.na(resale_flat_full$remaining_lease_mth)] <- 0
+resale_flat_full$remaining_lease_yr <- resale_flat_full$remaining_lease_yr * 12
+resale_flat_full <- resale_flat_full %>% 
+  mutate(resale_flat_full, remaining_lease_mths = rowSums(resale_flat_full[, c("remaining_lease_yr", "remaining_lease_mth")]))
+```
+
+### Transforming Storey Range
+
+Categorical variables require special attention in regression analysis because, unlike continuous variables, they *cannot* be entered into the regression equation just as they are. A method we can used to convert categorical variables into continuous variable is called "treatment" coding, or "dummy" coding. This method involve converting the categorical variable into a reference number.
+
+However, we must understand that ***storey range*** is an ordinal data, in other words, each categorical has an order, or in this case, low to high. Using a dummy variable might not make as much sense in this case. Hence, we will assign a higher value to higher floors. The reasoning behind it is that a higher floor offers more privacy, better security and lower noise pollution due to the high height.
+
+We will first create a dataframe to store all the unique storey range and at the same time sort them. After they are sorted we will create a list of encoding based on the unique values then merging them to form a data frame
+
+```{r}
+storeys <- sort(unique(resale_flat_full$storey_range))
+storey_order <- 1:length(storeys)
+storey_range_order <- data.frame(storeys, storey_order)
+```
+
+```{r}
+head(storey_range_order)
+```
+
+From the above results, we can see that:
+
+-   01 TO 03 is assigned the value: 1
+
+-   04 TO 06 is assigned the value: 2
+
+-   07 TO 09 is assigned the value: 3
+
+-   10 TO 12 is assigned the value: 4
+
+-   13 TO 15 is assigned the value: 5
+
+-   16 TO 18 is assigned the value: 6
+
+Hence, the storey range are in the correct order
+
+### Transforming Age
+
+Age is one of the key factors that we are using in our analysis. However, there is no direct reference to age of the HDB. One method we can use is to infer the age of the building based on the remaining lease. It is well known that Singapore HDB are leased to us for 99 years as such we can calculate the age based on the difference between the total lease and remaining lease.
+
+```{r}
+resale_flat_full <- resale_flat_full %>% 
+  mutate(resale_flat_full, age = 99 * 12 - resale_flat_full$remaining_lease_mths)
+```
+
+```{r}
+head(resale_flat_full)
+```
+
+```{r}
+resale_flat_full <- left_join(resale_flat_full, storey_range_order, by= c("storey_range" = "storeys"))
+
+rs_coords <- left_join(resale_flat_full, coords, by = c('address' = 'address'))
+```
+
+```{r}
+rs_coords_rds <- write_rds(rs_coords, "data/rds/rs_coords.rds")
+```
+
+```{r}
+rs_coords <- read_rds("data/rds/rs_coords.rds")
+```
+
+```{r}
+rs_coords_sf <- st_as_sf(rs_coords,
+                    coords = c("longitude", 
+                               "latitude"),
+                    crs=4326) %>%
+  st_transform(crs = 3414)
+```
+
+### Calculating Proximity
+
+```{r}
+proximity <- function(df1, df2, varname) {
+  dist_matrix <- st_distance(df1, df2) %>%
+    units::drop_units()
+  df1[,varname] <- rowMins(dist_matrix)
+  return(df1)
+}
+```
+
+```{r}
+rs_coords_sf <- 
+  # the columns will be truncated later on when viewing 
+  # so we're limiting ourselves to two-character columns for ease of viewing between
+  proximity(rs_coords_sf, CBD_3414, "PROX_CBD") %>%
+  proximity(., childcare3414, "PROX_CHILDCARE") %>%
+  proximity(., eldercare3414, "PROX_ELDERCARE") %>%
+  proximity(., hawker_centre3414, "PROX_HAWKER") %>%
+  proximity(., mrts_3414 , "PROX_MRT") %>%
+  proximity(., parks3414, "PROX_PARK") %>%
+  proximity(., top_primary_sch_sf_3414, "PROX_TOPPRISCH") %>%
+  proximity(., shopping_mall_sf_3414, "PROX_MALL") %>%
+  proximity(., supermarket_sf_3414, "PROX_SPRMKT") %>%
+  proximity(., isp_clinics3414, "PROX_CLINIC") %>%
+  proximity(., registered_pharmacy_3414, "PROX_PHARMACY") %>%
+  proximity(., tourism3414, "PROX_TOURISM") %>%
+  proximity(., libraries3414, "PROX_LIBRARY")
+```
+
+```{r}
+num_radius <- function(df1, df2, varname, radius) {
+  dist_matrix <- st_distance(df1, df2) %>%
+    drop_units() %>%
+    as.data.frame()
+  df1[,varname] <- rowSums(dist_matrix <= radius)
+  return(df1)
+}
+```
+
+```{r}
+rs_coords_sf <-
+  num_radius(rs_coords_sf, kindergarten3414, "NUM_KNDRGTN", 350) %>%
+  num_radius(., childcare3414, "NUM_CHILDCARE", 350) %>%
+  num_radius(., bus_stop_3414, "NUM_BUS_STOP", 350) %>%
+  num_radius(., isp_clinics3414, "NUM_ISP_CLIN", 350) %>%
+  num_radius(., registered_pharmacy_3414, "NUM_REGISTERED_PHARM", 350) %>%
+    num_radius(., libraries3414, "NUM_LIBRARIES", 350) %>%
+  num_radius(., primary_sch_sf_3414, "NUM_PRI_SCH", 1000)
+```
+
+```{r}
+rs_coords_full_rds <- write_rds(rs_coords_sf, "data/rds/rs_coords_full.rds")
+```
