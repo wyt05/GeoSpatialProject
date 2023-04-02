@@ -1,0 +1,66 @@
+---
+title: "pre-processing"
+
+author: "Pierre HAAS"
+
+date-modified: "`r Sys.Date()`"
+
+execute:
+  eval: true
+  echo: true
+  warning: false
+editor: visual
+
+number-sections: true
+---
+
+# Importing libraries
+
+```{r}
+pacman::p_load(onemapsgapi, httr, tidyverse)
+```
+
+# Pre-processing
+
+## Independent variables to retrieve from the OneMap API
+
+```{r}
+extra_variables = c("lta_cycling_paths", "disability", "hsgb_fcc", "sportsg_sport_facilities", "ssc_sports_facilities", "wastedisposalsite", "drainageconstruction", "cpe_pei_premises", "sewerageconstruction", "danger_areas", "aquaticsg", "moh_isp_clinics", "heritagetrees", "nparks_activity_area",  "exercisefacilities", "mha_uav_2015", "playsg", "underconstruction_facilities", "preschools_location", "hdbcyclingunderconstruction",  "boundary_5km",  "hdbluppropunderconstruction", "parkingstandardszone", "libraries", "cyclingpath", "dengue_cluster", "greenbuilding", "nparks_uc_parks")
+```
+
+## Retrieving data and storing it into data frame
+
+```{r}
+df = data.frame()
+
+url = "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme"
+
+token_api = get_token(email = "pierre.haas2002@gmail.com", password = "@P0yp0yonemap2oo2")
+
+for (x in extra_variables){
+  
+  query <- list("queryName" = x, "token" = token_api)
+  
+  result <- GET(url, query = query)
+  
+  print("Start")
+  print(x)
+  
+  for (i in 2:length(content(result)$SrchResults)){
+    new_row = c(content(result)$SrchResults[[i]]$NAME,
+                str_split_fixed(content(result)$SrchResults[[i]]$LatLng, ",", 2)[1],
+                str_split_fixed(content(result)$SrchResults[[i]]$LatLng, ",", 2)[2],
+                content(result)$SrchResults[[1]]$Theme_Name)
+    
+    df = rbind(df, new_row)
+  }
+
+}
+
+colnames(df)<-c("location_name", "lat", "lon", "variable_name")
+```
+
+```{r}
+write_csv(df, "extra_variables.csv")
+```
+
