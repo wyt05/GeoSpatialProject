@@ -117,6 +117,19 @@ fluidPage( theme=shinytheme("cyborg"),
                             selected = "12"),
                           
                           selectInput(
+                            inputId = "filter_flat_type",
+                            label = "Flat Type",
+                            choices = list("1 Room" = "1 ROOM",
+                                           "2 Room" = "2 ROOM",
+                                           "3 Room" = "3 ROOM",
+                                           "4 Room" = "4 ROOM",
+                                           "5 Room" = "5 ROOM",
+                                           "Executive" = "EXECUTIVE"
+                            ),
+                            selected = "4 ROOM"),
+                          
+                          
+                          selectInput(
                             inputId = "classification",
                             label = "Classification Method",
                             choices = c("pretty" = "pretty",

@@ -21,39 +21,29 @@ coordinates_table <- read_rds("data/rds/rs_coords_full.rds")
 # Define server logic required to draw a histogram
 function(input, output, session) {
   
+  
+  
     output$hdb_table <- renderDataTable(
       {
+        
+        start-date <- input$filter_start_year + "-" + input$filter_start_month
+        end-date <- input$filter_end_year + "-" + input$filter_end_month
+        
         if(is.null(input$file1)){
-          filtered_data_table <- coordinates_table %>%
-                                  filter()
           
+          resale_flat_full <-  filter(coordinates_table,flat_type == input$filter_flat_type) %>% 
+            filter(month >= start-date & month <= end-date)
           
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          return(coordinates_table)
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
+          return(resale_flat_full)
+        
         } else {
           req(input$file1)
           df <- read_rds(input$file1$datapath)
-          return(df)
+  
+          resale_flat_full <-  filter(df,flat_type == input$filter_flat_type) %>% 
+            filter(month >= start-date & month <= end-date)
+              
+          return(resale_flat_full)
         }
       }
       
