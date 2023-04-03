@@ -10,20 +10,69 @@
 library(shiny)
 pacman::p_load(sf, tidyverse, tmap, onemapsgapi, httr, jsonlite, olsrr, GWmodel, dotenv, matrixStats, spdep, SpatialML, Metrics, ggpubr)
 
+
+## we will load the model here
+coordinates_table <- read_rds("data/rds/rs_coords_full.rds")
+
+#making the table
+
+
+
 # Define server logic required to draw a histogram
 function(input, output, session) {
+  
+    output$hdb_table <- renderDataTable(
+      {
+        if(is.null(input$file1)){
+          filtered_data_table <- coordinates_table %>%
+                                  filter()
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          return(coordinates_table)
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        } else {
+          req(input$file1)
+          df <- read_rds(input$file1$datapath)
+          return(df)
+        }
+      }
+      
+      
 
-    output$distPlot <- renderPlot({
+    )
 
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
-
+    output$upload_table <- renderDataTable({
+      
+      # input$file1 will be NULL initially. After the user selects
+      # and uploads a file, head of that data file by default,
+      # or all rows if selected, will be shown.
+      
+      req(input$file1)
+      
+      df <- read_rds(input$file1$datapath)
+      return(df)
+      
+      
     })
 
 }

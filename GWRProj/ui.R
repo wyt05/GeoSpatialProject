@@ -21,7 +21,7 @@ fluidPage( theme=shinytheme("cyborg"),
                                      tags$ul(
                                        tags$li('Chen Hao Xian'),
                                        tags$li('Pierre Jean Michel Haas'),
-                                       tags$li('Tan Wen Yang'),
+                                       tags$li('Tan Wen Yang')
                                      )
                         ),
                         mainPanel(
@@ -42,14 +42,162 @@ fluidPage( theme=shinytheme("cyborg"),
                                   tags$ol(
                                     tags$li('Exploratory Data Analysis'),
                                     tags$li('GWR'),
-                                    tags$li('???'),
-                                  ),
+                                    tags$li('???')
+                                  )
                       ),
                     )
                    ),
                       
-             tabPanel("EDA"),
-             tabPanel("GWR")
+             tabPanel("EDA",
+                      titlePanel("Exploratory Data Analysis"),
+                      sidebarLayout(
+                        sidebarPanel(
+ 
+                          selectInput(
+                            inputId = "filter_start_year",
+                            label = "Start Year",
+                            choices = list("2017" = "2017",
+                                           "2018" = "2018",
+                                           "2019" = "2019",
+                                           "2020" = "2020",
+                                           "2021" = "2021",
+                                           "2022" = "2022",
+                                           "2023" = "2023"
+                            ),
+                            selected = "2021"),
+                          
+
+                          selectInput(
+                            inputId = "filter_end_year",
+                            label = "End Year",
+                            choices = list("2017" = "2017",
+                                           "2018" = "2018",
+                                           "2019" = "2019",
+                                           "2020" = "2020",
+                                           "2021" = "2021",
+                                           "2022" = "2022",
+                                           "2023" = "2023"
+                            ),
+                            selected = "2022"),                          
+                                                   
+                          selectInput(
+                            inputId = "filter_start_month",
+                            label = "Start Month",
+                            choices = list("January" = "01",
+                                           "February" = "02",
+                                           "March" = "03",
+                                           "April" = "04",
+                                           "May" = "05",
+                                           "June" = "06",
+                                           "July" = "07",
+                                           "August" = "08",
+                                           "September" = "09",
+                                           "Ocotober" = "10",
+                                           "November" = "11",
+                                           "December" = "12"
+                            ),
+                            selected = "01"),
+                          
+                          selectInput(
+                            inputId = "filter_end_month",
+                            label = "End Month",
+                            choices = list("January" = "01",
+                                           "February" = "02",
+                                           "March" = "03",
+                                           "April" = "04",
+                                           "May" = "05",
+                                           "June" = "06",
+                                           "July" = "07",
+                                           "August" = "08",
+                                           "September" = "09",
+                                           "Ocotober" = "10",
+                                           "November" = "11",
+                                           "December" = "12"
+                            ),
+                            selected = "12"),
+                          
+                          selectInput(
+                            inputId = "classification",
+                            label = "Classification Method",
+                            choices = c("pretty" = "pretty",
+                                        "quantile" = "quantile",
+                                        "sd" = "sd",
+                                        "equal" = "equal", 
+                                        "kmeans" = "kmeans", 
+                                        "hclust" = "hclust", 
+                                        "bclust" = "bclust", 
+                                        "fisher" = "fisher",
+                                        "jenks" = "jenks"
+                            ),
+                            selected = "pretty"),
+                          
+                          
+                          
+                          sliderInput(
+                            inputId = "classes",
+                            label = "Number of Classes",
+                            min = 6,
+                            max = 12,
+                            value = c(6)),
+                          
+                          selectInput(
+                            inputId = "colour",
+                            label = "Colour scheme",
+                            choices = c(
+                              "blues" = "Blues",
+                              "reds" = "Reds",
+                              "greens" = "Greens",
+                              "Yellow-Orange-Red" = "YlOrRd",
+                              "Yellow-Orange-Brown" = "YlOrBr",
+                              "Yellow-Green" = "YlGn",
+                              "Orange-Red" = "OrRd"
+                            ),
+                            selected = "YlOrRd"
+                          )
+                          
+                        ),
+                        
+                        mainPanel(
+                          titlePanel("Ducky"),
+                          
+                          dataTableOutput('hdb_table'),
+                          
+                          
+                          tmapOutput("mapPlot",
+                                     width = "100%",
+                                     height = 400)
+                        )
+                      ),                      
+                      
+             ),
+             
+             tabPanel("Upload File",
+                      titlePanel("Upload the RDS"),
+                      sidebarLayout(
+                        
+                        sidebarPanel(titlePanel("Disclaimer"),
+                          "You will also need to make sure that all the information has been computed already, otherwise it will not work.",
+                          "You will need to ensure that the RDS is below 5MB, otherwise it will crash",
+                          titlePanel("Upload File"),
+                          fileInput("file1", "Choose RDS File",
+                                    multiple = TRUE,
+                                    accept = c(".rds")),
+                        ),
+                        
+                        
+                        mainPanel(
+                          dataTableOutput('upload_table'),
+                        ),
+                        
+                        
+                        
+                        
+                      )
+             ),
+             
+             
+
+
   )
   
 )
