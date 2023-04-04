@@ -128,44 +128,49 @@ fluidPage( theme=shinytheme("cyborg"),
                             ),
                             selected = "4 ROOM"),
                           
-                          
                           selectInput(
-                            inputId = "classification",
-                            label = "Classification Method",
-                            choices = c("pretty" = "pretty",
-                                        "quantile" = "quantile",
-                                        "sd" = "sd",
-                                        "equal" = "equal", 
-                                        "kmeans" = "kmeans", 
-                                        "hclust" = "hclust", 
-                                        "bclust" = "bclust", 
-                                        "fisher" = "fisher",
-                                        "jenks" = "jenks"
+                            inputId = "hist_variable",
+                            label = "Histogram Variabe",
+                            choices = c("Resale Price" = "resale_price",
+                                        "Childcare" = "PROX_CHILDCARE",
+                                        "Eldercare" = "PROX_ELDERCARE",
+                                        "Hawker" = "PROX_HAWKER", 
+                                        "MRT" = "PROX_MRT", 
+                                        "Park" = "PROX_PARK", 
+                                        "Top Primary School" = "PROX_TOPPRISCH", 
+                                        "Mall" = "PROX_MALL",
+                                        "Supermarket" = "PROX_SPRMKT",
+                                        "Clinic" = "PROX_CLINIC",
+                                        "Pharmacy" = "PROX_PHARMACY",
+                                        "Tourism" = "PROX_TOURISM",
+                                        "Library" = "PROX_LIBRARY",
+                                        "No. Kindergarten" = "NUM_KINDRGTN",
+                                        "No. ChildCare" = "NUM_CHILDCARE",
+                                        "No. Bus Stop" = "NUM_BUS_STOP",
+                                        "No. ISP Clinic" = "NUM_ISP_CLINIC",
+                                        "No. Libraries" = "NUM_LIBRARIES",
+                                        "No. Pri School" = "NUM_PRI_SCH"
                             ),
-                            selected = "pretty"),
-                          
-                          
+                            selected = "resale_price"),
                           
                           sliderInput(
-                            inputId = "classes",
-                            label = "Number of Classes",
-                            min = 6,
-                            max = 12,
-                            value = c(6)),
+                            inputId = "num_bins",
+                            label = "Number of Bins",
+                            min = 5,
+                            max = 20,
+                            value = c(5)),
                           
                           selectInput(
-                            inputId = "colour",
-                            label = "Colour scheme",
+                            inputId = "fill_color",
+                            label = "Fill color",
                             choices = c(
-                              "blues" = "Blues",
-                              "reds" = "Reds",
-                              "greens" = "Greens",
-                              "Yellow-Orange-Red" = "YlOrRd",
-                              "Yellow-Orange-Brown" = "YlOrBr",
-                              "Yellow-Green" = "YlGn",
-                              "Orange-Red" = "OrRd"
+                              "blue" = "blue",
+                              "red" = "red",
+                              "green" = "green",
+                              "yellow" = "yellow",
+                              "orange" = "orange"
                             ),
-                            selected = "YlOrRd"
+                            selected = "red"
                           )
                           
                         ),
@@ -173,12 +178,11 @@ fluidPage( theme=shinytheme("cyborg"),
                         mainPanel(
                           titlePanel("Ducky"),
                           
+                          plotOutput('histogram_plots'),
+                          
                           dataTableOutput('hdb_table'),
                           
                           
-                          tmapOutput("mapPlot",
-                                     width = "100%",
-                                     height = 400)
                         )
                       ),                      
                       

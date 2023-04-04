@@ -25,14 +25,14 @@ function(input, output, session) {
   
     output$hdb_table <- renderDataTable(
       {
-        
-        start-date <- input$filter_start_year + "-" + input$filter_start_month
-        end-date <- input$filter_end_year + "-" + input$filter_end_month
+        start_date <- base::paste(input$filter_start_year, input$filter_start_month, sep="-")
+          
+        end_date <- base::paste(input$filter_end_year, input$filter_end_month, sep="-")
         
         if(is.null(input$file1)){
           
-          resale_flat_full <-  filter(coordinates_table,flat_type == input$filter_flat_type) %>% 
-            filter(month >= start-date & month <= end-date)
+          resale_flat_full <-  filter(coordinates_table, flat_type == input$filter_flat_type) %>% 
+            filter(month >= start_date & month <= end_date)
           
           return(resale_flat_full)
         
@@ -40,16 +40,45 @@ function(input, output, session) {
           req(input$file1)
           df <- read_rds(input$file1$datapath)
   
-          resale_flat_full <-  filter(df,flat_type == input$filter_flat_type) %>% 
-            filter(month >= start-date & month <= end-date)
+          resale_flat_full <- filter(df,flat_type == input$filter_flat_type) %>% 
+            filter(month >= start_date & month <= end_date)
               
           return(resale_flat_full)
         }
       }
-      
-      
-
     )
+    
+    
+    output$histogram_plots <- renderPlot({
+      
+      start_date <- base::paste(input$filter_start_year, input$filter_start_month, sep="-")
+      
+      end_date <- base::paste(input$filter_end_year, input$filter_end_month, sep="-")
+      
+      if(is.null(input$file1)){
+        
+        resale_flat_full <-  filter(coordinates_table, flat_type == input$filter_flat_type) %>% 
+          filter(month >= start_date & month <= end_date)
+        
+          ggplot(data=resale_flat_full, aes_string(x= input$hist_variable)) +
+            geom_histogram(bins=input$num_bins, color="black", fill=input$fill_color) +
+            labs(title = "Distribution",
+                 x = input$hist_variable,
+                 y = 'Frequency')
+          
+      } else {
+        req(input$file1)
+        df <- read_rds(input$file1$datapath)
+        
+        resale_flat_full <- filter(df,flat_type == input$filter_flat_type) %>% 
+          filter(month >= start_date & month <= end_date)
+        
+        return(resale_flat_full)
+      }
+      
+    })
+    
+    
 
     output$upload_table <- renderDataTable({
       
