@@ -9,6 +9,29 @@
 
 library(shiny)
 pacman::p_load("shinythemes")
+coordinates_table <- read_rds("data/rds/rs_coords_full.rds")
+
+resale_flat_full <- coordinates_table %>%
+  select(7, 11, 15:17, 19:38) %>%
+  rename("AREA_SQM" = "floor_area_sqm", 
+         "LEASE_YRS" = "remaining_lease_mths", 
+         "PRICE"= "resale_price",
+         "AGE"= "age",
+         "STOREY_ORDER" = "storey_order") %>%
+  relocate("PRICE") %>%
+  relocate(geometry, .after = last_col()) %>%
+  st_drop_geometry() 
+
+
+resale_flat_full_nogeo <- coordinates_table %>%
+  select(7, 15:17, 19:38) %>%
+  rename("AREA_SQM" = "floor_area_sqm", 
+         "LEASE_YRS" = "remaining_lease_mths",
+         "AGE"= "age",
+         "STOREY_ORDER" = "storey_order") %>%
+  relocate(geometry, .after = last_col())%>%
+  st_drop_geometry() 
+
 
 # Define UI for application that draws a histogram
 fluidPage( theme=shinytheme("cyborg"),
@@ -47,9 +70,19 @@ fluidPage( theme=shinytheme("cyborg"),
                       ),
                     )
                    ),
+             
+             tabPanel("CorrPlot",
+                      fluidPage(
+                        width = "100%",
+                        h3("CTEST FOR NORMALITY ASSUMPTION"),
+                        plotOutput("corrPlot")
+
+                      )
+               
+             ),
                       
              tabPanel("EDA",
-                      titlePanel("Exploratory Data Analysis"),
+                      h3("Exploratory Data Analysis"),
                       sidebarLayout(
                         sidebarPanel(
  
@@ -131,26 +164,7 @@ fluidPage( theme=shinytheme("cyborg"),
                           selectInput(
                             inputId = "hist_variable",
                             label = "Histogram Variabe",
-                            choices = c("Resale Price" = "resale_price",
-                                        "Childcare" = "PROX_CHILDCARE",
-                                        "Eldercare" = "PROX_ELDERCARE",
-                                        "Hawker" = "PROX_HAWKER", 
-                                        "MRT" = "PROX_MRT", 
-                                        "Park" = "PROX_PARK", 
-                                        "Top Primary School" = "PROX_TOPPRISCH", 
-                                        "Mall" = "PROX_MALL",
-                                        "Supermarket" = "PROX_SPRMKT",
-                                        "Clinic" = "PROX_CLINIC",
-                                        "Pharmacy" = "PROX_PHARMACY",
-                                        "Tourism" = "PROX_TOURISM",
-                                        "Library" = "PROX_LIBRARY",
-                                        "No. Kindergarten" = "NUM_KINDRGTN",
-                                        "No. ChildCare" = "NUM_CHILDCARE",
-                                        "No. Bus Stop" = "NUM_BUS_STOP",
-                                        "No. ISP Clinic" = "NUM_ISP_CLINIC",
-                                        "No. Libraries" = "NUM_LIBRARIES",
-                                        "No. Pri School" = "NUM_PRI_SCH"
-                            ),
+                            choices = colnames(resale_flat_full),
                             selected = "resale_price"),
                           
                           sliderInput(
@@ -176,24 +190,81 @@ fluidPage( theme=shinytheme("cyborg"),
                         ),
                         
                         mainPanel(
-                          titlePanel("Ducky"),
+                          h3("Histogram Plots"),
                           
                           plotOutput('histogram_plots'),
+                          h6("The Histogram will tell you whether the data is skewed or not. Most are skewed, but they resemble a normal distribution enough most of the time."),
+                          "",
+                          h3("Key Summaries"),
+                          h6("This segment basically tell you what the Key Summaries of the selected variables are for which town"),
+                          "",
+                          dataTableOutput('key_summaries'),
+                          h6("You can find find the Top 10 towns of the indicated variable here."),
+                          dataTableOutput('top_towns'),
+
                           
-                          dataTableOutput('hdb_table'),
+                          h3("Data Frame"),
                           
+                          dataTableOutput('hdb_table')
                           
                         )
                       ),                      
                       
              ),
              
+             
+             tabPanel("Multiple Linear Regression",
+                      titlePanel("Multiple Linear Regression"),
+
+                      sidebarLayout(
+                        sidebarPanel(
+                          h6("Please Reference the CorrPlot to select the correct variable. The Correlation Plot is currently static to give you an over view"),
+                          "",
+                          selectInput(
+                            inputId = "dependent_variable",
+                            label = "Y-Axis",
+                            choices = colnames(resale_flat_full_nogeo) ,
+                            selected = colnames(resale_flat_full_nogeo),
+                            multiple = TRUE)
+                        ),
+                        
+                        
+                        
+                        mainPanel(
+                          h3("Multiple Linear Regression"),
+                          verbatimTextOutput("linear_regress"),
+                          
+                          h6("Please remove all the models that are considered not significant based on your estimated probability."),
+  
+                          h3("Testing for Linearity"),
+                          h5("CHECKING FOR MULTICOLLINEARITY"),
+                          verbatimTextOutput("linear_regress_1"),
+                          h6("Remove All Variables with VIF more than 10 as they are signs of collinearity"),
+                          
+                          h5("TEST FOR NON-LINEARITY"),
+                          plotOutput("linear_regress_2"),          
+                          h6("Try to keep all the points close to the line"),
+
+                          h5("TEST FOR NORMALITY ASSUMPTION"),
+                          plotOutput("linear_regress_3"),   
+                          h6("Try to keep all the residues resemble a Normal Distribution")
+  
+                        )
+                        
+                      )
+                      
+               
+               
+               
+             ),
+             
+             
              tabPanel("Upload File",
                       titlePanel("Upload the RDS"),
                       sidebarLayout(
                         
                         sidebarPanel(titlePanel("Disclaimer"),
-                          "You will also need to make sure that all the information has been computed already, otherwise it will not work.",
+                          "You will also need to make sure that all the information has been computed already, otherwise it will not work, please follow the naming scheme as seen in the EDA Tab",
                           "You will need to ensure that the RDS is below 5MB, otherwise it will crash",
                           titlePanel("Upload File"),
                           fileInput("file1", "Choose RDS File",
