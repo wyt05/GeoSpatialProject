@@ -5,10 +5,9 @@ account: is415-hdb2023
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8783673
-bundleId: 7057990
+bundleId: 7062227
 url: https://is415-hdb2023.shinyapps.io/Shiny_app/
-when: 1680798615.03195
-lastSyncTime: 1680798615.03197
+when: 1680887616.78508
+lastSyncTime: 1680887616.78511
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: data/.DS_Store|data/aspatial/.DS_Store|data/geospatial/.DS_Store|data/rds/rs_coords.rds

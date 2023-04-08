@@ -441,3 +441,84 @@ rs_coords_sf <-
 ```{r}
 rs_coords_full_rds <- write_rds(rs_coords_sf, "data/rds/rs_coords_full.rds")
 ```
+
+### Generating the new LD
+
+```{r}
+rs_coords_full_rds <- read_rds("data/rds/rs_coords_full.rds")
+```
+
+```{r}
+start_date <- "2021-01"
+end_date <- "2022-12"
+filter_flat_type <- "4 ROOM"
+resale_flat_full_nogeo <-  filter(rs_coords_full_rds, flat_type == filter_flat_type) %>% 
+        filter(month >= start_date & month <= end_date) %>%
+        select(2, 7, 11, 15:17, 19:38) %>%
+        rename("AREA_SQM" = "floor_area_sqm", 
+               "LEASE_YRS" = "remaining_lease_mths", 
+               "PRICE"= "resale_price",
+               "AGE"= "age",
+               "STOREY_ORDER" = "storey_order") %>%
+        relocate("PRICE") %>%
+        relocate(geometry, .after = last_col()) %>%
+      st_drop_geometry() 
+
+resale_flat_full <-  filter(rs_coords_full_rds, flat_type == filter_flat_type) %>% 
+        filter(month >= start_date & month <= end_date) %>%
+        select(2, 7, 11, 15:17, 19:38) %>%
+        rename("AREA_SQM" = "floor_area_sqm", 
+               "LEASE_YRS" = "remaining_lease_mths", 
+               "PRICE"= "resale_price",
+               "AGE"= "age",
+               "STOREY_ORDER" = "storey_order") %>%
+        relocate("PRICE") %>%
+        relocate(geometry, .after = last_col())
+```
+
+```{r}
+resale_mlr1 <- lm(PRICE ~ AREA_SQM + LEASE_YRS + AGE + STOREY_ORDER + PROX_CBD + PROX_CHILDCARE + PROX_ELDERCARE + PROX_HAWKER + PROX_MRT + PROX_PARK + PROX_TOPPRISCH + PROX_MALL + PROX_SPRMKT + PROX_CLINIC + PROX_PHARMACY + PROX_TOURISM  + PROX_LIBRARY + NUM_KNDRGTN + NUM_CHILDCARE + NUM_BUS_STOP + NUM_ISP_CLIN + NUM_REGISTERED_PHARM + NUM_LIBRARIES, resale_flat_full_nogeo)
+```
+
+```{r}
+resale_res_sf <- cbind(resale_flat_full,resale_mlr1$residuals) %>%
+      rename(`MLR_RES` = resale_mlr1.residuals)
+
+resale_sp <- as_Spatial(resale_res_sf)
+```
+
+```{r}
+nb <- dnearneigh(coordinates(resale_sp), 0, 2500, longlat = FALSE)
+```
+
+```{r}
+nb_lw <- nb2listw(nb, style = 'W', zero.policy = TRUE)
+```
+
+```{r}
+moran_value <- lm.morantest(resale_mlr1, nb_lw)
+```
+
+```{r}
+moran_value_rds <- write_rds(moran_value, "data/rds/moran_value.rds")
+```
+
+```{r}
+moran_value_rds <- read_rds("data/rds/moran_value.rds")
+moran_value_rds
+```
+
+```{r}
+bw_adaptive <- bw.gwr(formula = PRICE ~ AREA_SQM + LEASE_YRS + AGE + STOREY_ORDER + PROX_CBD + PROX_CHILDCARE + PROX_ELDERCARE + PROX_HAWKER + PROX_MRT + PROX_PARK + PROX_TOPPRISCH + PROX_MALL + PROX_SPRMKT + PROX_CLINIC + PROX_PHARMACY + PROX_TOURISM  + PROX_LIBRARY + NUM_KNDRGTN + NUM_CHILDCARE + NUM_BUS_STOP + NUM_ISP_CLIN + NUM_REGISTERED_PHARM + NUM_LIBRARIES, data=resale_sp, approach="CV", kernel="gaussian",
+                      adaptive=TRUE, longlat=FALSE)
+```
+
+```{r}
+gwr_adaptive <- gwr.basic(formula = PRICE ~ AREA_SQM + LEASE_YRS + AGE + STOREY_ORDER + PROX_CBD + PROX_CHILDCARE + PROX_ELDERCARE + PROX_HAWKER + PROX_MRT + PROX_PARK + PROX_TOPPRISCH + PROX_MALL + PROX_SPRMKT + PROX_CLINIC + PROX_PHARMACY + PROX_TOURISM  + PROX_LIBRARY + NUM_KNDRGTN + NUM_CHILDCARE + NUM_BUS_STOP + NUM_ISP_CLIN + NUM_REGISTERED_PHARM + NUM_LIBRARIES,
+                      data=resale_sp, bw=9121, 
+                      kernel = 'gaussian', adaptive=TRUE, longlat = FALSE)
+```
+
+```{r}
+gwr_adaptive_rds <- write_rds(gwr_adaptive, "data/rds/gwr_adaptive.rds")
+```

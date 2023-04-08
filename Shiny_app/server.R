@@ -8,14 +8,12 @@
 #
 
 library(shiny)
+library(shinycssloaders)
 pacman::p_load(sf, tidyverse, tmap, onemapsgapi, httr, jsonlite, olsrr, corrplot ,GWmodel, dotenv, matrixStats, spdep, SpatialML, Metrics, ggpubr)
 
 
 ## we will load the model here
 coordinates_table <- read_rds("data/rds/rs_coords_full.rds")
-
-
-
 
 
 #making the table
@@ -25,7 +23,7 @@ coordinates_table <- read_rds("data/rds/rs_coords_full.rds")
 # Define server logic required to draw a histogram
 function(input, output, session) {
   
-  ## This check which file we should use
+  ## This check which file we should use, this provides the data with the town name
   
   resale_data <- reactive({
     
@@ -67,7 +65,48 @@ function(input, output, session) {
     }
   })
   
-  
+
+  resale_data_map <- reactive({
+    
+    start_date <- base::paste(input$filter_start_year_map, input$filter_start_month_map, sep="-")
+    
+    end_date <- base::paste(input$filter_end_year_map, input$filter_end_month_map, sep="-")
+    
+    if(is.null(input$file1)){
+      
+      resale_flat_full <-  filter(coordinates_table, flat_type == input$filter_flat_type_map) %>% 
+        filter(month >= start_date & month <= end_date) %>%
+        select(2, 7, 11, 15:17, 19:38) %>%
+        rename("AREA_SQM" = "floor_area_sqm", 
+               "LEASE_YRS" = "remaining_lease_mths", 
+               "PRICE"= "resale_price",
+               "AGE"= "age",
+               "STOREY_ORDER" = "storey_order") %>%
+        relocate("PRICE") %>%
+        relocate(geometry, .after = last_col())
+      
+      return(resale_flat_full)
+    }
+    else {
+      req(input$file1)
+      df <- read_rds(input$file1$datapath)
+      
+      resale_flat_full <- filter(df,flat_type == input$filter_flat_type_map) %>% 
+        filter(month >= start_date & month <= end_date) %>%
+        select(2, 7, 11, 15:17, 19:38) %>%
+        rename("AREA_SQM" = "floor_area_sqm", 
+               "LEASE_YRS" = "remaining_lease_mths", 
+               "PRICE"= "resale_price",
+               "AGE"= "age",
+               "STOREY_ORDER" = "storey_order") %>%
+        relocate("PRICE") %>%
+        relocate(geometry, .after = last_col())
+      
+      return(resale_flat_full)
+    }
+  })
+    
+  ### This filters out the relevant dataset this provides the data without the town name
   resale_data_cleaned <- reactive({
     
     start_date <- base::paste(input$filter_start_year, input$filter_start_month, sep="-")
@@ -108,6 +147,9 @@ function(input, output, session) {
     }
   })
   
+  
+  ### This retrieves the data and remvoe the geo data
+  
   resale_data_nogeo <- reactive({
     
     new_df <- resale_data_cleaned() %>%
@@ -117,7 +159,7 @@ function(input, output, session) {
   })
   
   
-  
+  ## This stores the Linear Regression Model
   nogeo_lm <- reactive({
     
     var_formulat <- as.formula(paste("PRICE"," ~ ",paste(input$dependent_variable,collapse="+")))
@@ -126,9 +168,101 @@ function(input, output, session) {
     
     return(resale_mlr1)
     
-    
   })
   
+  ### This create a spatial Datapoint Frame 
+  
+  resale_with_residue <- reactive({
+    
+    resale_res_sf <- cbind(resale_data_cleaned(), 
+                           nogeo_lm()$residuals) %>%
+      rename(`MLR_RES` = `nogeo_lm...residuals`)
+    
+    resale_sp <- as_Spatial(resale_res_sf)
+    
+
+    return(resale_sp)
+  
+  })
+  
+  
+  ### This is to calculate the weight matrix
+  
+  weight_Matrix <- reactive({
+    print("hello")
+    nb <- dnearneigh(coordinates(resale_with_residue()), input$lowerBound, input$upperBound, longlat = FALSE)
+    
+    if (input$zeroPolicy)
+    {nb_lw <- nb2listw(nb, style = input$matrixStyles, zero.policy = TRUE)}
+    else {nb_lw <- nb2listw(nb, style = input$matrixStyles, zero.policy = FALSE)}
+    
+    return (nb_lw)
+
+  })
+  
+  
+  ## This is the event for Moran Value
+  moran_value <- read_rds("data/rds/moran_value.rds")
+  
+  observeEvent(input$computeMoran, {
+    output$moran_test <- renderPrint({
+      moran_value = lm.morantest(nogeo_lm(), weight_Matrix())
+    })
+  })
+  
+  
+  #### This is to calculate the lm
+  
+  gwr_adaptive <- read_rds("data/rds/gwr_adaptive.rds")
+  
+  adaptive_band <- reactive({
+    var_formulat <- as.formula(paste("PRICE"," ~ ",paste(input$dependent_variable,collapse="+")))
+    
+    if(input$longlat == "TRUE"){longlat_value <- TRUE}
+    
+    if(input$adaptive == "TRUE"){adaptive_value <- TRUE}
+    
+    bw_adaptive <- bw.gwr(formula = var_formulat,
+                          data=resale_with_residue(), approach="CV", p = input$power, theta = input$theta,
+                          kernel = input$approach, adaptive=adaptive_value, longlat = longlat_value)
+    
+    gwr_adaptive_values <- gwr.basic(formula = var_formulat,
+                                     data=resale_with_residue(), bw=bw_adaptive, p = input$power, theta = input$theta,
+                                     kernel = input$kernelValues, adaptive=adaptive_value, longlat = longlat_value)
+    
+    return(gwr_adaptive_values)
+  })
+  
+  fixed_band <- reactive({
+    var_formulat <- as.formula(paste("PRICE"," ~ ",paste(input$dependent_variable,collapse="+")))
+    
+    if(input$longlat == "TRUE"){longlat_value <- TRUE}
+    
+    if(input$adaptive == "TRUE"){adaptive_value <- TRUE}
+    
+    gwr_adaptive_values <- gwr.basic(formula = var_formulat,
+                                     data=resale_with_residue(), bw=input$bandwidth, p = input$power, theta = input$theta,
+                                     kernel = input$kernelValues, adaptive=adaptive_value, longlat = longlat_value)
+    return(gwr_adaptive_values)
+  })
+  
+  observeEvent(input$compute_bandwidth, {
+    
+    output$gw_adaptive <- renderPrint({
+      adaptive_band()
+    })
+
+  }) 
+  
+  observeEvent(input$generate_gwr, {
+    
+    output$gw_adaptive <- renderPrint({
+      fixed_band()
+    })
+    
+  }) 
+
+   
   ### This is to render the HDB Data Table
   output$hdb_table <- renderDataTable(
     {
@@ -136,11 +270,7 @@ function(input, output, session) {
     }
   )
   
-  
-  
-  
-  
-  
+
   ### This is to render the histrogram Plot
   
   output$histogram_plots <- renderPlot({
@@ -221,6 +351,90 @@ function(input, output, session) {
   
   output$linear_regress_3 <- renderPlot({
     ols_plot_resid_hist(nogeo_lm())
+  })
+  
+  output$moran_test <- renderPrint({
+    moran_value
+  })
+  
+  output$gw_adaptive <- renderPrint({
+    gwr_adaptive
+
+  })
+  
+  output$insert_values <- renderPrint({
+    input$dependent_variable
+  })
+  
+  output$predictions <- renderPrint({
+    
+    if(input$selectedModel == "GWR"){
+      
+      req(input$file2)
+      
+      df2_sp <- read_rds(input$file2$datapath)
+      
+      if(isTruthy(input$compute_bandwidth)){
+        var_formulat <- as.formula(paste("PRICE"," ~ ",paste(input$dependent_variable,collapse="+")))
+        
+        if(input$longlat == "TRUE"){longlat_value <- TRUE}
+        
+        if(input$adaptive == "TRUE"){adaptive_value <- TRUE}
+        
+        bw_adaptive <- bw.gwr(formula = var_formulat,
+                              data=resale_with_residue(), approach="CV", p = input$power, theta = input$theta,
+                              kernel = input$approach, adaptive=adaptive_value, longlat = longlat_value)
+        
+        gwr_adaptive_values <- gwr.predict(formula = var_formulat,
+                                         data=resale_with_residue(), predict_data = df2_sp, 
+                                         bw=bw_adaptive, p = input$power, theta = input$theta,
+                                         kernel = input$kernelValues, adaptive=adaptive_value, longlat = longlat_value)
+        
+        return(gwr_adaptive_values$SDF)
+      }
+      else{
+        
+        var_formulat <- as.formula(paste("PRICE"," ~ ",paste(input$dependent_variable,collapse="+")))
+        
+        if(input$longlat == "TRUE"){longlat_value <- TRUE}
+        
+        if(input$adaptive == "TRUE"){adaptive_value <- TRUE}
+        
+        gwr_adaptive_values <- gwr.predict(formula = var_formulat,
+                                         data=resale_with_residue(), predict_data = df2_sp,
+                                         bw=input$bandwidth, p = input$power, theta = input$theta,
+                                         kernel = input$kernelValues, adaptive=adaptive_value, longlat = longlat_value)
+        
+        return(gwr_adaptive_values$SDF)
+      }} else{
+        
+        list_variable <- str_split(input$values, ",")
+        
+        df = data.frame(matrix(nrow = 0, ncol = length(input$dependent_variable))) 
+        
+        colnames(df) = input$dependent_variable
+        
+        df[nrow(df) + 1,] <- as.numeric(unlist(list_variable))
+        
+        predicted <- predict(nogeo_lm(), df, level = 0.95)
+        
+        predicted[1]
+        
+      }
+
+  })
+  
+  output$mapPlot <- renderTmap({
+    
+    
+    
+    tmap_options(check.and.fix = TRUE) +
+      tm_shape(resale_data_map()) +
+      tm_dots(col = paste(input$map_variable),
+              alpha = 0.6,
+              style = input$classification) +
+      tm_view(set.zoom.limits = c(11,14))
+    
   })
   
 }
