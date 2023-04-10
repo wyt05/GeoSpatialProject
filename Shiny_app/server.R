@@ -85,6 +85,8 @@ function(input, output, session) {
         relocate("PRICE") %>%
         relocate(geometry, .after = last_col())
       
+      resale_flat_full <- tail(resale_flat_full, input$points)
+      
       return(resale_flat_full)
     }
     else {
@@ -101,6 +103,8 @@ function(input, output, session) {
                "STOREY_ORDER" = "storey_order") %>%
         relocate("PRICE") %>%
         relocate(geometry, .after = last_col())
+      
+      resale_flat_full <- tail(resale_flat_full, input$points)
       
       return(resale_flat_full)
     }
@@ -328,7 +332,7 @@ function(input, output, session) {
   ### This is to render the Correlation Plot
   
   output$corrPlot <- renderPlot({
-    corrplot(cor(resale_data_nogeo()[, 2:23]), 
+    corrplot(cor(resale_data_nogeo()[, 2:length(resale_data_nogeo())]), 
              diag = FALSE, 
              order = "AOE",
              tl.pos = "td",
@@ -386,7 +390,7 @@ function(input, output, session) {
                               kernel = input$approach, adaptive=adaptive_value, longlat = longlat_value)
         
         gwr_adaptive_values <- gwr.predict(formula = var_formulat,
-                                         data=resale_with_residue(), predict_data = df2_sp, 
+                                         data=resale_with_residue(), predictdata = df2_sp, 
                                          bw=bw_adaptive, p = input$power, theta = input$theta,
                                          kernel = input$kernelValues, adaptive=adaptive_value, longlat = longlat_value)
         
@@ -401,7 +405,7 @@ function(input, output, session) {
         if(input$adaptive == "TRUE"){adaptive_value <- TRUE}
         
         gwr_adaptive_values <- gwr.predict(formula = var_formulat,
-                                         data=resale_with_residue(), predict_data = df2_sp,
+                                         data=resale_with_residue(), predictdata = df2_sp,
                                          bw=input$bandwidth, p = input$power, theta = input$theta,
                                          kernel = input$kernelValues, adaptive=adaptive_value, longlat = longlat_value)
         
@@ -426,13 +430,13 @@ function(input, output, session) {
   
   output$mapPlot <- renderTmap({
     
-    
-    
     tmap_options(check.and.fix = TRUE) +
       tm_shape(resale_data_map()) +
-      tm_dots(col = paste(input$map_variable),
+      tm_dots(col = input$view_variable_map,
               alpha = 0.6,
-              style = input$classification) +
+              n = input$classes,
+              style = input$classification,
+              palette = input$colour) +
       tm_view(set.zoom.limits = c(11,14))
     
   })

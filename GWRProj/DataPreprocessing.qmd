@@ -477,6 +477,14 @@ resale_flat_full <-  filter(rs_coords_full_rds, flat_type == filter_flat_type) %
 ```
 
 ```{r}
+resale_flat_full_perdict<- resale_flat_full %>% select(3:26)
+```
+
+```{r}
+rs_coords_pred_rds <- write_rds(as_Spatial(tail(resale_flat_full_perdict,10)), "data/rds/rs_coords_predict.rds")
+```
+
+```{r}
 resale_mlr1 <- lm(PRICE ~ AREA_SQM + LEASE_YRS + AGE + STOREY_ORDER + PROX_CBD + PROX_CHILDCARE + PROX_ELDERCARE + PROX_HAWKER + PROX_MRT + PROX_PARK + PROX_TOPPRISCH + PROX_MALL + PROX_SPRMKT + PROX_CLINIC + PROX_PHARMACY + PROX_TOURISM  + PROX_LIBRARY + NUM_KNDRGTN + NUM_CHILDCARE + NUM_BUS_STOP + NUM_ISP_CLIN + NUM_REGISTERED_PHARM + NUM_LIBRARIES, resale_flat_full_nogeo)
 ```
 

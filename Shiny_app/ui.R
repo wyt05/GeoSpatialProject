@@ -70,21 +70,11 @@ fluidPage( theme=shinytheme("cyborg"),
                                    titlePanel("App Functions"),
                                    tags$ol(
                                      tags$li('Exploratory Data Analysis'),
-                                     tags$li('GWR'),
-                                     tags$li('???')
+                                     tags$li('Model Building'),
+                                     tags$li('Prediction')
                                    )
                                  ),
                                )
-                      ),
-                      
-                      tabPanel("CorrPlot",
-                               fluidPage(
-                                 width = "100%",
-                                 h3("CTEST FOR NORMALITY ASSUMPTION"),
-                                 plotOutput("corrPlot")
-                                 
-                               )
-                               
                       ),
                       
                       tabPanel("EDA",
@@ -218,7 +208,16 @@ fluidPage( theme=shinytheme("cyborg"),
                                ),                      
                                
                       ),
-                      
+  
+                      tabPanel("CorrPlot",
+                               fluidPage(
+                                 width = "100%",
+                                 h3("CTEST FOR NORMALITY ASSUMPTION"),
+                                 plotOutput("corrPlot")
+                                 
+                               )
+                               
+                      ),                    
                       
                       tabPanel("Multiple Linear Regression",
                                titlePanel("Multiple Linear Regression"),
@@ -448,7 +447,7 @@ fluidPage( theme=shinytheme("cyborg"),
                                  
                                  mainPanel(
                                    h3("Predicted Value"),
-                                   h6("Generating the Prediction for GWR and Bandwidth will result in a Long Loading Time, please refrain from pressing it unless you wish to compute the value in real time."),
+                                   h6("Generating the Prediction for GWR will result in a Long Loading Time, please refrain from running it unless you wish to compute the value in real time."),
 
                                    withSpinner(verbatimTextOutput("predictions"), type = 2),
                                    
@@ -543,6 +542,13 @@ fluidPage( theme=shinytheme("cyborg"),
                                                 choices = colnames(resale_flat_full),
                                                 selected = "resale_price"),
                                               
+                                              sliderInput(
+                                                inputId = "points",
+                                                label = "Number of Points Shown",
+                                                min = 10,
+                                                max = 2000,
+                                                value = c(100)),
+                                              
                                               selectInput(
                                                 inputId = "classification",
                                                 label = "Classification Method",
@@ -597,7 +603,8 @@ fluidPage( theme=shinytheme("cyborg"),
                                sidebarLayout(
                                  
                                  sidebarPanel(titlePanel("Disclaimer"),
-                                              h6("You will also need to make sure that all the information has been computed already, otherwise it will not work, please follow the naming scheme as seen in the EDA Tab"),
+                                              h6("You will also need to make sure that all the dependent variable has been computed already"),
+                                              h6("You can refer to the link to preprocess: https://is415-gaa-hxchen.netlify.app/lessons/take-home/take-home_ex3/take-home_ex3"),
                                               h6("You will need to ensure that the RDS is below 5MB, otherwise it will crash"),
                                               titlePanel("Upload File"),
                                               fileInput("file1", "Choose RDS File",
