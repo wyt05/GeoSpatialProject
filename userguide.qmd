@@ -62,6 +62,8 @@ In General, the way you want to navigate through the application is from the lef
 
 ## Upload File
 
+Please read the Disclaimer on what is expected.
+
 ![You can upload your pre processed file here. Once the upload is complete, you should be able to see if the uploaded table here.](images/image-1847437255.png)
 
 ![](images/image-191044178.png)
@@ -70,4 +72,30 @@ Congratulation now the shiny app will be using this new file for the rest of the
 
 ### Troubleshooting
 
-#### Uploaded File but No Table is shown
+#### I have uploaded a Table successfully but the rest of the Shiny App is not working
+
+You have successfully uploaded the Table but when you enter the EDA tab you are greeted with this error. This mean that the data uploaded is not correct. You need to follow the pre processing tab closely in order to ensure that app will feed.
+
+![](images/image-1667091527.png)
+
+#### Uploaded File but No Table is shown.
+
+![](images/image-295839219.png)
+
+The RDS file you uploaded is not a table.
+
+### Uploaded File Size Exceeded
+
+![](images/image-1828195131.png)
+
+The RDS File is too big. Due to the limitations of the shiny app it can only receive RDS file that is 5MB and below.
+
+### EDA
+
+This section will show you the critical information of the given data set. All the plots here are dynamic and will update according to the new information given. This section is supposed to highlight more insights about the data before the model is build.
+
+Adjusting the filters here will have an effect on the model building.
+
+![](images/image-1526870859.png)
+
+### CorrPlot

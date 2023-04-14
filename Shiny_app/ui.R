@@ -212,7 +212,7 @@ fluidPage( theme=shinytheme("cyborg"),
                       tabPanel("CorrPlot",
                                fluidPage(
                                  width = "100%",
-                                 h3("CTEST FOR NORMALITY ASSUMPTION"),
+                                 h3("Corr Plot"),
                                  plotOutput("corrPlot")
                                  
                                )
