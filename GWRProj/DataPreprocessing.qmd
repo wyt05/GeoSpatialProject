@@ -1,15 +1,17 @@
 ---
 title: "Project Data-preprocessing"
 date: "11 March 2023"
-author: "GWR"
+author: "Hao Xian, Wen Yang and Pierre Jean Michel"
 execute: 
   echo: true
-  eval: true
+  eval: false
   warning: false
 editor: visual
 ---
 
-We use this to create the dataset for analysis
+We will first need to prepossessed all the information.
+
+# Loading the Packages
 
 Packages needed:
 

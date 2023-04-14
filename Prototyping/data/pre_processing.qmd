@@ -6,7 +6,7 @@ author: "Pierre HAAS"
 date-modified: "`r Sys.Date()`"
 
 execute:
-  eval: true
+  eval: false
   echo: true
   warning: false
 editor: visual
@@ -63,4 +63,3 @@ colnames(df)<-c("location_name", "lat", "lon", "variable_name")
 ```{r}
 write_csv(df, "extra_variables.csv")
 ```
-

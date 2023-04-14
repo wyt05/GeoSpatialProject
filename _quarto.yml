@@ -9,8 +9,16 @@ website:
         text: Home
       - href: projectproposal.qmd
         text: Project Proposal
-      - href: ./Prototyping/prototyping_v1.qmd
-        text: Prototype
+      - href: poster.qmd
+        text: Poster        
+      - href: report.qmd
+        text: Project Report
+      - href: userguide.qmd
+        text: User Guide
+      - href: ./GWRProj/DataPreprocessing.qmd
+        text: Date Preprocessing for Shiny Model
+
+
 
 format:
   html:
