@@ -202,7 +202,7 @@ fluidPage( theme=shinytheme("cyborg"),
                                    
                                    h3("Data Frame"),
                                    
-                                   dataTableOutput('hdb_table')
+                                   withSpinner(dataTableOutput('hdb_table'))
                                    
                                  )
                                ),                      
@@ -213,7 +213,7 @@ fluidPage( theme=shinytheme("cyborg"),
                                fluidPage(
                                  width = "100%",
                                  h3("Corr Plot"),
-                                 plotOutput("corrPlot")
+                                 withSpinner(plotOutput("corrPlot"))
                                  
                                )
                                
@@ -404,8 +404,8 @@ fluidPage( theme=shinytheme("cyborg"),
                                  
                                  
                                  mainPanel(
-                                   h3("Testing for Auto Spatial Correlation"),
-                                   h6("We will be generating the GW_Adaptive Method"),
+                                   h3("Geographically Weighted Regression Model"),
+                                   h6("Please note that the bandwidth use is calculated using bw adaptive"),
                                    
                                    withSpinner(verbatimTextOutput("gw_adaptive"), type = 2),
                                    
@@ -460,7 +460,7 @@ fluidPage( theme=shinytheme("cyborg"),
                       tabPanel("Interactive Map",
                                titlePanel("Interactive Map"),
                                sidebarLayout(
-                                 sidebarPanel(titlePanel("Disclaimer"),
+                                 sidebarPanel(
                                               selectInput(
                                                 inputId = "filter_start_year_map",
                                                 label = "Start Year",

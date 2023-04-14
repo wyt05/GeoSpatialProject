@@ -11,7 +11,7 @@ website:
         text: Project Proposal
       - href: poster.qmd
         text: Poster        
-      - href: report.qmd
+      - href: ./report/report.qmd
         text: Project Report
       - href: userguide.qmd
         text: User Guide
