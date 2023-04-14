@@ -120,8 +120,21 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#group-members" id="toc-group-members" class="nav-link active" data-scroll-target="#group-members"><span class="toc-section-number">1</span>  Group Members:</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="toc-section-number">2</span>  Summary:</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link active" data-scroll-target="#getting-started"><span class="toc-section-number">1</span>  Getting Started</a>
+  <ul class="collapse">
+  <li><a href="#installing-the-r-and-r-studio" id="toc-installing-the-r-and-r-studio" class="nav-link" data-scroll-target="#installing-the-r-and-r-studio"><span class="toc-section-number">1.1</span>  Installing the R and R Studio</a></li>
+  <li><a href="#installing-the-proper-packages" id="toc-installing-the-proper-packages" class="nav-link" data-scroll-target="#installing-the-proper-packages"><span class="toc-section-number">1.2</span>  Installing the proper packages</a></li>
+  </ul></li>
+  <li><a href="#preprocessing-the-data" id="toc-preprocessing-the-data" class="nav-link" data-scroll-target="#preprocessing-the-data"><span class="toc-section-number">2</span>  Preprocessing the Data</a></li>
+  <li><a href="#starting-the-shiny-app" id="toc-starting-the-shiny-app" class="nav-link" data-scroll-target="#starting-the-shiny-app"><span class="toc-section-number">3</span>  Starting the Shiny App</a></li>
+  <li><a href="#navigating-through-the-shiny-app" id="toc-navigating-through-the-shiny-app" class="nav-link" data-scroll-target="#navigating-through-the-shiny-app"><span class="toc-section-number">4</span>  Navigating through the Shiny App</a>
+  <ul class="collapse">
+  <li><a href="#home-page" id="toc-home-page" class="nav-link" data-scroll-target="#home-page"><span class="toc-section-number">4.1</span>  Home Page</a></li>
+  <li><a href="#upload-file" id="toc-upload-file" class="nav-link" data-scroll-target="#upload-file"><span class="toc-section-number">4.2</span>  Upload File</a>
+  <ul class="collapse">
+  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting"><span class="toc-section-number">4.2.1</span>  Troubleshooting</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -163,14 +176,61 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="group-members" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="group-members"><span class="header-section-number">1</span> Group Members:</h2>
-<p>Tan Wen Yang and Hao Xian</p>
+<section id="getting-started" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Getting Started</h1>
+<section id="installing-the-r-and-r-studio" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="installing-the-r-and-r-studio"><span class="header-section-number">1.1</span> Installing the R and R Studio</h2>
+<p>While there is a link for you to access the Shiny Application, it is recommended that you run to the R application locally, as the Shiny Webpage does not provide enough resources to run all the features of the application. This is especially so if you wish to build your own model.</p>
+<p>The instructions to install R and R Studio can be found <a href="https://posit.co/download/rstudio-desktop/">here</a>.</p>
 </section>
-<section id="summary" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="summary"><span class="header-section-number">2</span> Summary:</h2>
+<section id="installing-the-proper-packages" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="installing-the-proper-packages"><span class="header-section-number">1.2</span> Installing the proper packages</h2>
+<p>You can install all the relevant packages that is needed for Shiny App on R Studio. While there are quite a lot of packages to install, <a href="https://cran.r-project.org/web/packages/pacman/index.html">pacman</a> should be prioritized to ensure the easy installation of the rest of the packages.</p>
+<p>To Install the packages, Go to the tools sections, click on Install Packages. And insert the name pacman to install the correct packages.</p>
+<p><img src="images/image-1594178259.png" class="img-fluid"></p>
+<p><img src="images/image-846762764.png" class="img-fluid"></p>
+<p>You should be ready to run all the application.</p>
+</section>
+</section>
+<section id="preprocessing-the-data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Preprocessing the Data</h1>
+<p>The Shiny Application by itself cannot perform Pre processing by itself. However all the steps have been given to you already in the Data Pre processing Tab. All you need to do is just to follow all the steps in order to prepare the data.</p>
+<p>All you need to do is to pre processed the data. The Building Model Section is integrated into the Shiny App already.</p>
+</section>
+<section id="starting-the-shiny-app" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Starting the Shiny App</h1>
+<p>To start the Shiny App, you will need to download our <a href="https://github.com/wyt05/GeoSpatialProject">GitHub Repository</a> first. Once you have extracted all the folder. All you need to do is to navigate to the Folder <code>Shiny_App.</code> Run either server.R and ui.R on R Studio and it will start up the Shiny App.</p>
+<p>Congratulation, you have started our shiny app.</p>
+<p>Alternative, you can visit our link <a href="https://is415-hdb2023.shinyapps.io/Shiny_app/">here</a> for a hosted shiny app.</p>
+</section>
+<section id="navigating-through-the-shiny-app" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Navigating through the Shiny App</h1>
+<p>When starting up the our Shiny App you will be greeted with our Home Page.</p>
+<section id="home-page" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="home-page"><span class="header-section-number">4.1</span> Home Page</h2>
+<p><img src="images/image-943181994.png" class="img-fluid"></p>
+<p>You can navigate to the different sections from the navigation bar above.</p>
+<p>In General, the way you want to navigate through the application is from the left to right, with the only exception being the Upload you own data.</p>
+</section>
+<section id="upload-file" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="upload-file"><span class="header-section-number">4.2</span> Upload File</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-1847437255.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">You can upload your pre processed file here. Once the upload is complete, you should be able to see if the uploaded table here.</figcaption><p></p>
+</figure>
+</div>
+<p><img src="images/image-191044178.png" class="img-fluid"></p>
+<p>Congratulation now the shiny app will be using this new file for the rest of the shiny application.</p>
+<section id="troubleshooting" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="troubleshooting"><span class="header-section-number">4.2.1</span> Troubleshooting</h3>
+<section id="uploaded-file-but-no-table-is-shown" class="level4" data-number="4.2.1.1">
+<h4 data-number="4.2.1.1" class="anchored" data-anchor-id="uploaded-file-but-no-table-is-shown"><span class="header-section-number">4.2.1.1</span> Uploaded File but No Table is shown</h4>
 
 
+</section>
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->

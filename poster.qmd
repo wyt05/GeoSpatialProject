@@ -1,10 +1,9 @@
 ---
 title: "IS445 Project"
 author: "Hao Xian, Wen Yang and Pierre Jean Michel"
-date: "4 March 2023"
+date: "`r Sys.Date()`"
 date-modified: '`r Sys.Date()`'
 format: html
-number-sections: true
 execute: 
   echo: true
   eval: true
@@ -14,8 +13,4 @@ execute:
 editor: visual
 ---
 
-## Group Members:
-
-Tan Wen Yang and Hao Xian
-
-## Summary:
+## ![](images/IS415_G1T3_Poster.jpg)

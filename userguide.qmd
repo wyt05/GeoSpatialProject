@@ -14,8 +14,60 @@ execute:
 editor: visual
 ---
 
-## Group Members:
+# Getting Started
 
-Tan Wen Yang and Hao Xian
+## Installing the R and R Studio
 
-## Summary:
+While there is a link for you to access the Shiny Application, it is recommended that you run to the R application locally, as the Shiny Webpage does not provide enough resources to run all the features of the application. This is especially so if you wish to build your own model.
+
+The instructions to install R and R Studio can be found [here](https://posit.co/download/rstudio-desktop/).
+
+## Installing the proper packages
+
+You can install all the relevant packages that is needed for Shiny App on R Studio. While there are quite a lot of packages to install, [pacman](https://cran.r-project.org/web/packages/pacman/index.html) should be prioritized to ensure the easy installation of the rest of the packages.
+
+To Install the packages, Go to the tools sections, click on Install Packages. And insert the name pacman to install the correct packages.
+
+![](images/image-1594178259.png)
+
+![](images/image-846762764.png)
+
+You should be ready to run all the application.
+
+# Preprocessing the Data
+
+The Shiny Application by itself cannot perform Pre processing by itself. However all the steps have been given to you already in the Data Pre processing Tab. All you need to do is just to follow all the steps in order to prepare the data.
+
+All you need to do is to pre processed the data. The Building Model Section is integrated into the Shiny App already.
+
+# Starting the Shiny App
+
+To start the Shiny App, you will need to download our [GitHub Repository](https://github.com/wyt05/GeoSpatialProject) first. Once you have extracted all the folder. All you need to do is to navigate to the Folder `Shiny_App.` Run either server.R and ui.R on R Studio and it will start up the Shiny App.
+
+Congratulation, you have started our shiny app.
+
+Alternative, you can visit our link [here](https://is415-hdb2023.shinyapps.io/Shiny_app/) for a hosted shiny app.
+
+# Navigating through the Shiny App
+
+When starting up the our Shiny App you will be greeted with our Home Page.
+
+## Home Page
+
+![](images/image-943181994.png)
+
+You can navigate to the different sections from the navigation bar above.
+
+In General, the way you want to navigate through the application is from the left to right, with the only exception being the Upload you own data.
+
+## Upload File
+
+![You can upload your pre processed file here. Once the upload is complete, you should be able to see if the uploaded table here.](images/image-1847437255.png)
+
+![](images/image-191044178.png)
+
+Congratulation now the shiny app will be using this new file for the rest of the shiny application.
+
+### Troubleshooting
+
+#### Uploaded File but No Table is shown

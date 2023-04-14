@@ -9,86 +9,124 @@ execute:
 editor: visual
 ---
 
-We will first need to prepossessed all the information.
+We will first need to Pre processed all the information that we need.
 
 # Loading the Packages
 
-Packages needed:
+**The R packages we'll use for this analysis are:**
+
+-   [**sf**](https://cran.r-project.org/web/packages/sf/index.html): used for importing, managing, and processing spatial data
+
+-   [**tidyverse**](https://www.tidyverse.org/): a collection of packages for data science tasks
+
+    -   **readr** for importing delimited files (.csv)
+
+    -   **tidyr** for manipulating and tidying data
+
+    -   **dplyr** for wrangling and transforming data
+
+    -   **ggplot2** for visualising data
+
+-   [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html): used for creating thematic maps, such as choropleth and bubble maps
+
+-   [**spdep**](https://cran.r-project.org/web/packages/spdep/index.html): used to create spatial weights matrix objects, global and local spatial autocorrelation statistics and related calculations (e.g. spatially lag attributes)
+
+-   [**onemapsgapi**](https://cran.r-project.org/web/packages/onemapsgapi/index.html): used to query Singapore-specific spatial data, alongside additional functionalities.
+
+-   \[**httr**\]((https://cran.r-project.org/web/packages/httr/)**:** used to make API calls, such as a GET request
+
+-   [**units**](https://cran.r-project.org/web/packages/units/index.html): used to for manipulating numeric vectors that have physical measurement units associated with them
+
+-   [**matrixStats**](https://cran.r-project.org/web/packages/matrixStats/index.html): a set of high-performing functions for operating on rows and columns of matrices
+
+-   [**jsonlite**](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html): a JSON parser that can convert from JSON to the appropraite R data types
+
+-   [**rgdal**](https://cran.r-project.org/web/packages/rgdal/index.html)**:** provides bindings to the 'Geospatial' Data Abstraction Library
+
+**In addition, these R packages are specific to building + visualising hedonic pricing models:**
+
+-   [**olsrr**](https://cran.r-project.org/web/packages/olsrr/index.html): used for building least squares regression models
+
+-   [**coorplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html) + [**ggpubr**](https://cran.r-project.org/web/packages/ggpubr/index.html): both are used for multivariate data visualisation & analysis
+
+-   [**GWmodel**](https://cran.r-project.org/web/packages/GWmodel/index.html): provides a collection of localised spatial statistical methods, such as summary statistics, principal components analysis, discriminant analysis and various forms of GW regression
+
+-   [**SpatialML**](https://cran.r-project.org/web/packages/SpatialML/index.html)**:** Implements a spatial extension of the random forest algorithm
+
+**Lastly, here are the extra R packages that aren't necessary for the analysis itself, but help us go the extra mile with visualisations and presentation of our analysis:**
+
+-   [**devtools**](https://cran.r-project.org/web/packages/devtools/index.html): used for installing any R packages which is not available in RCRAN. In this context, it'll be used to download the [**xaringanExtra**](https://pkg.garrickadenbuie.com/xaringanExtra/#/) package for [panelsets](https://pkg.garrickadenbuie.com/xaringanExtra/#/panelset)
+
+-   [**kableExtra**](https://haozhu233.github.io/kableExtra/): an extension of kable, used for table customisation
+
+-   [**plotly**](https://plotly.com/r/): used for creating interactive web graphics, and can be used in conjunction with ggplot2 with the `ggplotly()` function
+
+-   [**ggthemes**](https://cran.r-project.org/web/packages/ggthemes/index.html): an extension of ggplot2, with more advanced themes for plotting
 
 ```{r}
-pacman::p_load(sf, tidyverse, tmap, onemapsgapi, httr, jsonlite, olsrr, GWmodel, dotenv, matrixStats, spdep, SpatialML, Metrics, ggpubr, units)
+pacman::p_load(sf, tidyverse, tmap, spdep, httr,
+             onemapsgapi, units, matrixStats, readxl, jsonlite,
+             olsrr, corrplot, ggpubr, GWmodel, SpatialML, tidymodels, 
+             devtools, kableExtra, plotly, ggthemes, onemapsgapi, rgdal)
 ```
 
-## Load in all the shape data
+# The Data
 
-```{r}
-mpsz <- st_read(dsn="data/geospatial", "MPSZ-2019")
-national_boundary <- st_read(dsn="data/geospatial", "CostalOutline")
-childcare <- st_read(dsn="data/geospatial", layer="childcare")
-eldercare <- st_read(dsn="data/geospatial", layer="eldercare")
-hawker_centre <- st_read(dsn="data/geospatial", layer="hawkercentre")
-kindergarten <- st_read(dsn="data/geospatial", layer="kindergartens")
-parks <- st_read(dsn="data/geospatial", layer="nationalparks")
-libraries <- st_read(dsn="data/geospatial", layer="libraries")
-isp_clinics <- st_read(dsn="data/geospatial", layer="moh_isp_clinics")
-tourism <- st_read(dsn="data/geospatial", layer="tourism")
-bus_stop <- st_read(dsn="data/geospatial", layer="BusStop")
-primary_sch <- st_read(dsn="data/geospatial", layer="primary_sch") %>% st_transform(primary_sch, crs=4326)
-top_primary_sch <- st_read(dsn="data/geospatial", layer="top10_pri_sch") %>% st_transform(top_primary_sch, crs=4326)
-registered_pharmacy <- st_read(dsn="data/geospatial", layer="registered_pharmacy") %>% st_transform(registered_pharmacy, crs=4326)
-CBD <- st_read(dsn="data/geospatial", layer="cbd") %>% st_transform(CBD, crs=4326)
-mrts <- st_read(dsn="data/geospatial", layer="mrt_lrt") %>% st_transform(mrts, crs=4326)
-```
+## List of Data
 
-Convert into 3414
+Note that this list is not exhaustive and if you find other point data you can add them as well.
 
-```{r}
-childcare3414 <- st_transform(childcare, crs=3414)
-eldercare3414 <- st_transform(eldercare, crs=3414)
-hawker_centre3414 <- st_transform(hawker_centre, crs=3414)
-kindergarten3414 <- st_transform(kindergarten, crs=3414)
-parks3414 <- st_transform(parks, crs=3414)
-libraries3414 <- st_transform(libraries, crs=3414)
-isp_clinics3414 <- st_transform(isp_clinics, crs=3414)
-tourism3414 <- st_transform(tourism, crs=3414)
-primary_sch_sf_3414 <- st_transform(primary_sch, crs=3414)
-top_primary_sch_sf_3414 <- st_transform(top_primary_sch, crs=3414)
-registered_pharmacy_3414 <- st_transform(registered_pharmacy, crs=3414)
-CBD_3414 <- st_transform(CBD, crs=3414)
-mrts_3414 <- st_transform(mrts, crs=3414)
-bus_stop_3414 <- st_transform(bus_stop, crs=3414)
-```
+| Type                     | Name                                         | Format | Source                                                                                                      |
+|--------------|--------------|--------------|------------------------------|
+| Aspatial                 | Resale Flat Price                            | .csv   | [data.gov.sg](https://data.gov.sg/dataset/resale-flat-prices)                                               |
+| Geospatial               | Singapore National Boundary                  | .shp   | [data.gov.sg](https://data.gov.sg/dataset/national-map-polygon)                                             |
+| Geospatial               | Master Plan 2019 Subzone Boundary (Web)      | .shp   | Prof Kam                                                                                                    |
+| Geospatial               | MRT Exit Point                               | .shp   | [LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=train)      |
+| Geospatial               | Bus Stop Locations Aug 2023                  | .shp   | [LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=bus%20stop) |
+| Geospatial - Extracted   | Childcare Services                           | .shp   | [OneMap API](https://www.onemap.gov.sg/docs/)                                                               |
+| Geospatial - Extracted   | Eldercare Services                           | .shp   | [OneMap API](https://www.onemap.gov.sg/docs/)                                                               |
+| Geospatial - Extracted   | Hawker Centres                               | .shp   | [OneMap API](https://www.onemap.gov.sg/docs/)                                                               |
+| Geospatial - Extracted   | Kindergartens                                | .shp   | [OneMap API](https://www.onemap.gov.sg/docs/)                                                               |
+| Geospatial - Extracted   | Parks                                        | .shp   | [OneMap API](https://www.onemap.gov.sg/docs/)                                                               |
+| Geospatial - Extracted   | Supermarkets                                 | .kml   | [OneMap API](https://www.onemap.gov.sg/main/v2/essentialamenities)                                          |
+| Geospatial - Extracted   | Primary Schools                              | .pdf   | [MOE Website](https://www.moe.gov.sg/about-us/organisation-structure/sd/school-clusters)                    |
+| Geospatial - Selfsourced | List of Shopping Mall                        | .html  | [Wikipedia](https://en.wikipedia.org/wiki/List_of_shopping_malls_in_Singapore)                              |
+| Geospatial - Selfsourced | Pharmacy                                     | .kml   | [OneMap API](https://www.onemap.gov.sg/main/v2/essentialamenities)                                          |
+| Geospatial - Selfsourced | Integrated Screening Programme (ISP) Clinics | .kml   | [OneMap API](https://www.onemap.gov.sg/main/v2/essentialamenities)                                          |
+| Geospatial - Selfsourced | Libraries                                    | .kml   | [OneMap API](https://www.onemap.gov.sg/main/v2/essentialamenities)                                          |
+| Geospatial - Selfsourced | Tourist                                      | .kml   | [OneMap API](https://www.onemap.gov.sg/main/v2/essentialamenities)                                          |
 
-Load shopping malls
-
-```{r}
-shopping_mall <- read_csv("data/aspatial/shopping_mall.csv")
-```
-
-```{r}
-shopping_mall_sf <- st_as_sf(shopping_mall, coords=c("longitude", "latitude"), crs=4326)
-shopping_mall_sf_3414 <- st_transform(shopping_mall_sf, crs=3414)
-```
-
-### Importing SuperMarket Data
-
-```{r}
-supermarket_sf <- st_read("data/geospatial/supermarkets.kml") 
-```
-
-```{r}
-supermarket_sf <- st_zm(supermarket_sf)
-supermarket_sf_3414 <- st_transform(supermarket_sf, crs=3414)
-```
+# Preparing the Aspatial Data
 
 ## Importing the Resale Data
 
 ```{r}
-resale_flat_full <- read_csv("data/aspatial/resale-flat-prices-from-jan-2017-onwards.csv")
-glimpse(resale_flat_full)
+resale <- read_csv("data/aspatial/resale-flat-prices.csv")
+glimpse(resale)
 ```
 
-Taking a look at the data we have noticed that the data set contains 11 columns with 148576 observations. They have the following columns: ***months, town, flat_type, block, street_name, storey_range, floor_area_sqm, flat_model, remaining_lease, resale_price.***
+Taking a look at the data we have noticed that the data set contains 11 columns with 148576 observations. They have the following columns: ***months, town, flat_type, block, street_name, storey_range, floor_area_sqm, flat_model, remaining_lease, resale_price.*** We are only interested in the following period from: *1st January 2021 to 31st December 2022* and *January 2023 to February 2022*.
+
+### Filtering the Aspatial Data
+
+We are making use of the filter function from the dplyr package to help us filter out the data. Find out more [here](https://dplyr.tidyverse.org/reference/filter.html). As there is more steps to be done on the aspatial data before it can be used for geographically weighted regression, we will split the data set into the period: 1*st January 2021 to February 2022*, for now.
+
+```{r}
+resale_flat_full <-  filter(resale,flat_type == "4 ROOM") %>% 
+              filter(month >= "2021-01" & month <= "2023-02")
+```
+
+Once we have split it, we can make use of the unique function of Base R to ensure that all the data extracted out are correct. Find out more [here](https://rdrr.io/r/base/unique.html).
+
+```{r}
+unique(resale_flat_full$flat_type)
+```
+
+```{r}
+unique(resale_flat_full$month)
+```
+
+From the result above, we can confirm that the data for data set is extracted correctly.
 
 ## Transforming the Resale Data
 
@@ -266,6 +304,7 @@ With the function define we can call the function to generate out the data frame
 Please note that this function does take some time to run.
 
 ```{r}
+#| eval: false
 coords <- get_coords(add_list)
 ```
 
@@ -276,6 +315,7 @@ Remember all the issues that we can face when making the api call, we would need
 We can make use of the `is.na()` function to check which street address contains any NA values
 
 ```{r}
+#| eval: false
 coords[(is.na(coords$postal) | is.na(coords$latitude) | is.na(coords$longitude) | coords$postal=="NIL"), ]
 ```
 
@@ -367,6 +407,861 @@ resale_flat_full <- resale_flat_full %>%
 head(resale_flat_full)
 ```
 
+### Combining all the data and storing as RDS
+
+We will now combine all the relevant fields to a data frame using `left_join()` function of dplyr package. Find out more [here](https://dplyr.tidyverse.org/reference/mutate-joins.html).
+
+```{r}
+#| eval: false
+resale_flat_full <- left_join(resale_flat_full, storey_range_order, by= c("storey_range" = "storeys"))
+
+rs_coords <- left_join(resale_flat_full, coords, by = c('address' = 'address'))
+```
+
+We can then store the data frame into a rds for use later.
+
+```{r}
+#| eval: false
+rs_coords_rds <- write_rds(rs_coords, "data/aspatial/rds/rs_coords.rds")
+```
+
+## Viewing RDS Data
+
+### Reading RDS
+
+Instead of performing all the steps above again, once you save the data frame in a rds format, you can read the rds format again. Notice how the data frame is saved exactly as it is.
+
+```{r}
+rs_coords <- read_rds("data/aspatial/rds/rs_coords.rds")
+head(rs_coords)
+```
+
+### Converting to Sf Object
+
+Since the coordinate columns are Latitude & Longitude which are in decimal degrees, the projected CRS will be WGS84. We will need to assign them the respective EPSG code 4326 first before transforming it to 3414 which is the EPSG code for SVY21.
+
+We will first use the `st_as_sf()` function of sf package to convert the data frame into sf object. Find out more [here](https://www.rdocumentation.org/packages/sf/versions/1.0-9/topics/st_as_sf).
+
+Followed by the `st_transform()` function of sf package to transform the coordinates of the sf object.
+
+```{r}
+rs_coords_sf <- st_as_sf(rs_coords,
+                    coords = c("longitude", 
+                               "latitude"),
+                    crs=4326) %>%
+  st_transform(crs = 3414)
+
+rs_coords_sf
+```
+
+### Checking for invalid geometries
+
+The step below is not exactly mandatory, but it is good to check if the sf object is valid or not.
+
+```{r}
+length(which(st_is_valid(rs_coords_sf) == FALSE))
+```
+
+### Plotting the HDB Resale points
+
+```{r}
+tmap_mode("view")
+tm_shape(rs_coords_sf)+
+  tm_dots(col="blue", size = 0.02)
+tmap_mode("plot")
+```
+
+# Preparing the Locational Data
+
+In this section, we will be retrieving all the other co location factors from the OneMap API.
+
+::: callout-important
+The following steps are made with reference to: Take Home Exercise 3 done by: MEGAN SIM TZE YEN. Check out her work [here](https://is415-msty.netlify.app/posts/2021-10-25-take-home-exercise-3/#structural-factors).
+:::
+
+## Extracting the Data from OneMap API
+
+Before we do a deep dive into examining the data, the first step that we need to do first is to extract out all the relevant data that we need. But first we need to see what OneMap API allows us to extract first.
+
+Before we start off, I will first be introducing to you the onemapsgapi package that we will be using. You can learn more about the package [here](https://rdrr.io/cran/onemapsgapi/). You will need to sign up for an account so that they will generate a unique token for you to use. I have already pre-loaded my token into a variable called ***token***.
+
+### Step 1: Searching for Themes
+
+The first step that we can do is to see what themes are available for us to use, with the code chunk below. In this case, we will be using the function `search_themes()` function to help us view all the available list. Find out more [here](https://rdrr.io/cran/onemapsgapi/man/search_themes.html).
+
+```{r}
+#| echo: false
+token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEwMDA2LCJ1c2VyX2lkIjoxMDAwNiwiZW1haWwiOiJoeGNoZW4wMEBnbWFpbC5jb20iLCJmb3JldmVyIjpmYWxzZSwiaXNzIjoiaHR0cDpcL1wvb20yLmRmZS5vbmVtYXAuc2dcL2FwaVwvdjJcL3VzZXJcL3Nlc3Npb24iLCJpYXQiOjE2Nzk4MjQ4NTQsImV4cCI6MTY4MDI1Njg1NCwibmJmIjoxNjc5ODI0ODU0LCJqdGkiOiI5ZmEyYjA3NTRlZDZiYjI2MDEzZmE2NzI0MGMxNmI2NSJ9.J2MvVpZ3V9MFmmCgvUgfytgBtf356VQA68Uoz9xw_Nw"
+
+```
+
+```{r}
+# Please replace token with the values of your own token.
+avail_themes <- search_themes(token)
+avail_themes
+```
+
+As you can see there seems to be a huge amount of themes available for us to use, which in this case I am interested only in a few namely, **Eldercare Services, Childcare Services, Hawker Centres, Parks, Kindergartens.** As you have noticed, there seems to be some themes that have repeated themselves, we would need to do a deep dive to find out more about what each theme contains.
+
+### Step 2: A Closer Look at each theme
+
+One ability of the `search_themes()` function is that you can make a query as well. This way there is no need to see all the other information that is not necessary for our evaluation.
+
+[**Eldercare**]{.underline}
+
+```{r}
+avail_themes_elder <- search_themes(token, "elder")
+avail_themes_elder
+```
+
+There is only one available theme relating to Eldercare, so this theme will be use. The query is `eldercare`
+
+[**Childcare**]{.underline}
+
+```{r}
+avail_themes_child <- search_themes(token, "childcare")
+avail_themes_child
+```
+
+There is only one available theme relating to ChildCare, so this theme will be use. The query is `childcare`
+
+[**Hawker Centres**]{.underline}
+
+```{r}
+avail_themes_hawker <- search_themes(token, "hawker")
+avail_themes_hawker
+```
+
+In this case, there appears to be 3 different themes with the name "Hawker". In this case, we can ignore the healthier_hawker_centres, as it category is in health rather than environment.
+
+```{r}
+hawkercentre_new <- get_theme(token, "hawkercentre_new")
+hawkercentre <- get_theme(token, "hawkercentre")
+head(hawkercentre_new)
+head(hawkercentre)
+```
+
+If we were to compare to 2 data frame, both data set has the same number of observations, with the only difference being that hawkercentre_new theme has more variables as compared to that of the hawkercentre. However, the difference in variables does seems to add value to the data frame at all and will be drop as those variables are not essential. Using either of the themes should have be fine, but I will be making use of the former for this exercise.
+
+The query picked is `hawkercentre_new`
+
+[**Parks**]{.underline}
+
+```{r}
+avail_themes_parks <- search_themes(token, "parks")
+avail_themes_parks 
+```
+
+Based on the dataframe, above there seems to be a total of 25 different themes that matches the name "parks", however this is due to the fact that it is the result also returns the results from the "National Parks Boards". There are two themes that stands out the most here: "Parks" and "NParks Parks and Nature Reserve". If we were to look into their category we found that the former belongs to recreation, while the latter belongs to environment. Seeing as we're trying to relate the locational factors to the pricing of resale housing units, it makes more sense to go with the former!
+
+The query chosen is `nationalparks`
+
+[**Kindergarten**]{.underline}
+
+```{r}
+avail_themes_kindergarten <- search_themes(token, "kinder")
+avail_themes_kindergarten
+```
+
+There is only one available theme relating to Kindergartens, so this theme will be use. The query is `kindergartens`
+
+[**Clinic**]{.underline}
+
+```{r}
+avail_themes_clinic <- search_themes(token, "health")
+avail_themes_clinic
+```
+
+There is only one available theme relating to Clinic, so this theme will be use. The query is `moh_isp_clinics`
+
+Another theme of interest could also be Pharmacy, so this theme will be use. The query is `registered_pharmacy`
+
+[**Tourist**]{.underline}
+
+```{r}
+avail_themes_tourist <- search_themes(token, "tourism")
+avail_themes_kindergarten
+```
+
+There is only one available theme relating to Tourism, so this theme will be use. The query is `tourism`
+
+[**Libraries**]{.underline}
+
+```{r}
+avail_themes_libraries <- search_themes(token, "libraries")
+avail_themes_libraries
+```
+
+There is only one available theme relating to Tourism, so this theme will be use. The query is `libraries`
+
+[**Others**]{.underline}
+
+One thing to note is that we are no longer able to access some information that Megan has access to due to the update of the API such as the name of the primary school as well, which we will address in the other section.
+
+### Step 3: Saving the Data into a data frame
+
+In order to facilitate in the retrieving of themes, I have created the following function to aid me in retrieving the themes and saving them as a data frame.
+
+We will be making use of the `get_theme()` function from the onemapsgapi package to retrieve the relevant and output it in a tibble frame. Read more [here](https://cran.r-project.org/web/packages/onemapsgapi/vignettes/onemapsgapi_vignette.html).
+
+Afterwards, we will convert the tibble to simple features dataframe. All the themes for this project use Lat and Lng as the latitude and longitude respectively, and our project coordinates system should be in the WGS84 system, aka ESPG code 4326.
+
+To ensure that we can access the data again, we will save it into asf into a shapefile, which we can do with `st_write()` function.
+
+```{r}
+#| eval: false
+save_theme_sf <- function(themename){
+  
+  themetibble <- get_theme(token, themename) %>%
+    select(c("NAME", "Lat", "Lng") )
+  themesf <- st_as_sf(themetibble, coords=c("Lng", "Lat"), crs=4326)
+  themename_file <- paste("data/extracted/", themename, ".shp", sep="")
+  st_write(themesf, themename_file)
+} 
+```
+
+```{r}
+#| eval: false
+save_theme_sf("eldercare")
+save_theme_sf("childcare")
+save_theme_sf("hawkercentre_new")
+save_theme_sf("nationalparks")
+save_theme_sf("kindergartens")
+save_theme_sf("moh_isp_clinics")
+save_theme_sf("registered_pharmacy")
+save_theme_sf("libraries")
+save_theme_sf("tourism")
+```
+
+## Extracting the Other Data
+
+Now that we have handled those data, one issue that we have face is that there is no data for most the Shopping Mall or Primary School.
+
+[**Shopping Mall Data**]{.underline}
+
+Unlike Megan's Time where both Shopping Mall Data can be found in OneMap API, we need will need to make to do with the list from Wikipedia, which might not necessary be the most accurate, however, it appears to be the best list of data that we have.
+
+You can find the link [here](https://en.wikipedia.org/wiki/List_of_shopping_malls_in_Singapore). `https://en.wikipedia.org/wiki/List_of_shopping_malls_in_Singapore`
+
+I have extracted the all the data from the wikipedia and clean it up manually.
+
+```{r}
+shopping_mall_list = c("100 AM","313@Somerset","Aperia","Balestier Hill Shopping Centre","Bugis Cube","Bugis Junction","Bugis+","Capitol Piazza","Cathay Cineleisure Orchard","Clarke Quay Central","The Centrepoint","City Square Mall","City Gate Mall","CityLink Mall","Duo","Far East Plaza","Funan","Great World City","HDB Hub","Holland Village Shopping Mall","ION Orchard","Junction 8","Knightsbridge","Liat Towers","Lucky Plaza","Marina Bay Sands","The Shoppes at Marina Bay Sands","Marina Bay Link Mall","Marina Square","Millenia Walk","Mustafa Shopping Centre","Ngee Ann City","Orchard Central","Orchard Gateway","Orchard Plaza","Midpoint Orchard","Palais Renaissance","People's Park Centre","People's Park Complex","Plaza Singapura","PoMo","Raffles City","Scotts Square","Shaw House and Centre","Sim Lim Square","Singapore Shopping Centre","The South Beach","Square 2","Sunshine Plaza","Suntec City","Tanglin Mall","Tanjong Pagar Centre","Tekka Centre","The Adelphi","The Paragon","Tiong Bahru Plaza","The Poiz","Thomson Plaza","United Square","Thomson V","Velocity@Novena Square","Wheelock Place","Wisma Atria","Zhongshan Mall","Bedok Mall","Century Square","Our Tampines Hub","Changi City Point","Downtown East","Djitsun Mall Bedok","Eastpoint Mall","Jewel Changi Airport","KINEX","Katong Shopping Centre","Katong Square","Kallang Wave Mall","Leisure Park Kallang","i12 Katong","Parkway Parade","Paya Lebar Square","Paya Lebar Quarter","Roxy Square","Singpost Centre","Tampines 1","Tampines Mall","White Sands","City Plaza","Elias Mall","Loyang Point","888 Plaza","Admiralty Place","AMK Hub","Canberra Plaza","Causeway Point","Woodlands Civic Centre","Broadway Plaza","Djitsun Mall","Jubilee Square","Junction 8","Junction Nine","Marsiling Mall","Northpoint City","Sembawang Shopping Centre","Sun Plaza","Vista Point","Wisteria Mall","Woodlands Mart","Woodlands North Plaza","Waterway Point","Compass One","Hougang Mall","Heartland Mall","NEX","Buangkok Square","Greenwich V","Hougang 1","Hougang Green Shopping Mall","Hougang Rivercourt","myVillage At Serangoon Garden","Northshore Plaza","Oasis Terraces","Punggol Plaza","Rivervale Mall","Rivervale Plaza","The Seletar Mall","Upper Serangoon Shopping Centre","Beauty World Centre","Beauty World Plaza","Bukit Panjang Plaza","Bukit Timah Plaza","Fajar Shopping Centre","Greenridge Shopping Centre","Hillion Mall","HillV2","Junction 10","Keat Hong Shopping Centre","Limbang Shopping Centre","Lot One","Rail Mall","Sunshine Place","Teck Whye Shopping Centre","West Mall","Yew Tee Point","Yew Tee Square","VivoCity","HarbourFront Centre","Alexandra Retail Centre","321 Clementi","The Clementi Mall","IMM","JCube","Jem","Westgate","Jurong Point","Pioneer Mall","The Star Vista","Alexandra Central","Anchorpoint","OD Mall","Boon Lay Shopping Centre","Grantral Mall","Fairprice Hub","Gek Poh Shopping Centre","Rochester Mall","Taman Jurong Shopping Centre","West Coast Plaza","Queensway Shopping Centre")
+```
+
+Remember the function that we have created to retrieve the hdb, we can make use of it here as well to find their coordinates.
+
+Note that this function does take some time to run.
+
+```{r}
+shop_coords <- get_coords(shopping_mall_list)
+```
+
+```{r}
+shop_coords
+```
+
+Now then we can check which Mall does not have the necessary data
+
+```{r}
+shop_coords[(is.na(shop_coords$postal) | is.na(shop_coords$latitude) | is.na(shop_coords$longitude) | shop_coords$postal=="NIL"), ]
+```
+
+From the results above, we can see that there are 7 addresses that does not contain any information at all:
+
+-   Clarke Quay Central
+
+-   City Gate Mall
+
+-   Holland Village Shopping Mall
+
+-   Mustafa Shopping Centre
+
+-   PoMo
+
+-   Shaw House and Centre
+
+-   OD Mall
+
+I research deeper into the situation and found reverse search the malls to find their Postal Code, afterwards I will search out the name based on the One Map API and found the following:
+
+-   Clarke Quay Central is called `The Central`
+
+-   City Gate Mall is called `City Gate`
+
+-   Holland Village Shopping Mall is called `Holland Road Shopping Centre`
+
+-   Mustafa Shopping Centre is called `Mustafa Centre`
+
+-   PoMO is called `GR.ID`
+
+-   Shaw House and Centre is called `Shaw Centre`
+
+-   OD Mall is called `The GrandStand`
+
+I will append the names in the list below as it is easier:
+
+```{r}
+new_shopping_mall_list = c("100 AM","313@Somerset","Aperia","Balestier Hill Shopping Centre","Bugis Cube","Bugis Junction","Bugis+","Capitol Piazza","Cathay Cineleisure Orchard","The Central","The Centrepoint","City Square Mall","City Gate","CityLink Mall","Duo","Far East Plaza","Funan","Great World City","HDB Hub","Holland Road Shopping Centre","ION Orchard","Junction 8","Knightsbridge","Liat Towers","Lucky Plaza","Marina Bay Sands","The Shoppes at Marina Bay Sands","Marina Bay Link Mall","Marina Square","Millenia Walk","Mustafa Centre","Ngee Ann City","Orchard Central","Orchard Gateway","Orchard Plaza","Midpoint Orchard","Palais Renaissance","People's Park Centre","People's Park Complex","Plaza Singapura","GR.ID","Raffles City","Scotts Square","Shaw Centre","Sim Lim Square","Singapore Shopping Centre","The South Beach","Square 2","Sunshine Plaza","Suntec City","Tanglin Mall","Tanjong Pagar Centre","Tekka Centre","The Adelphi","The Paragon","Tiong Bahru Plaza","The Poiz","Thomson Plaza","United Square","Thomson V","Velocity@Novena Square","Wheelock Place","Wisma Atria","Zhongshan Mall","Bedok Mall","Century Square","Our Tampines Hub","Changi City Point","Downtown East","Djitsun Mall Bedok","Eastpoint Mall","Jewel Changi Airport","KINEX","Katong Shopping Centre","Katong Square","Kallang Wave Mall","Leisure Park Kallang","i12 Katong","Parkway Parade","Paya Lebar Square","Paya Lebar Quarter","Roxy Square","Singpost Centre","Tampines 1","Tampines Mall","White Sands","City Plaza","Elias Mall","Loyang Point","888 Plaza","Admiralty Place","AMK Hub","Canberra Plaza","Causeway Point","Woodlands Civic Centre","Broadway Plaza","Djitsun Mall","Jubilee Square","Junction 8","Junction Nine","Marsiling Mall","Northpoint City","Sembawang Shopping Centre","Sun Plaza","Vista Point","Wisteria Mall","Woodlands Mart","Woodlands North Plaza","Waterway Point","Compass One","Hougang Mall","Heartland Mall","NEX","Buangkok Square","Greenwich V","Hougang 1","Hougang Green Shopping Mall","Hougang Rivercourt","myVillage At Serangoon Garden","Northshore Plaza","Oasis Terraces","Punggol Plaza","Rivervale Mall","Rivervale Plaza","The Seletar Mall","Upper Serangoon Shopping Centre","Beauty World Centre","Beauty World Plaza","Bukit Panjang Plaza","Bukit Timah Plaza","Fajar Shopping Centre","Greenridge Shopping Centre","Hillion Mall","HillV2","Junction 10","Keat Hong Shopping Centre","Limbang Shopping Centre","Lot One","Rail Mall","Sunshine Place","Teck Whye Shopping Centre","West Mall","Yew Tee Point","Yew Tee Square","VivoCity","HarbourFront Centre","Alexandra Retail Centre","321 Clementi","The Clementi Mall","IMM","JCube","Jem","Westgate","Jurong Point","Pioneer Mall","The Star Vista","Alexandra Central","Anchorpoint","The GrandStand","Boon Lay Shopping Centre","Grantral Mall","Fairprice Hub","Gek Poh Shopping Centre","Rochester Mall","Taman Jurong Shopping Centre","West Coast Plaza","Queensway Shopping Centre")
+```
+
+```{r}
+shop_coords_new <- get_coords(new_shopping_mall_list) 
+shop_coords_new 
+```
+
+We will check again to make sure that the data is correct
+
+```{r}
+shop_coords_new[(is.na(shop_coords_new$postal) | is.na(shop_coords_new$latitude) | is.na(shop_coords_new$longitude) | shop_coords_new$postal=="NIL"), ]
+```
+
+Since we have confirm that the data is clean, we will just rename the columns to make it easier to understand.
+
+```{r}
+rename(shop_coords_new, "name" = "address")
+```
+
+We will save it as a shape file so that we can access it much more easily
+
+```{r}
+shopping_sf <- st_as_sf(shop_coords_new, coords=c("longitude", "latitude"), crs=4326)
+```
+
+```{r}
+#| eval: false
+st_write(shopping_sf, "data/extracted/shopping_mall.shp")
+```
+
+[**Primary School**]{.underline}
+
+Unlike Megan's Time where Primary School Data can be found in OneMap API and is found in Data.gov, we need will need to make to do with the list from MOE, which appears to be the best list of data that we have.
+
+You can find the link [here](https://www.moe.gov.sg/about-us/organisation-structure/sd/school-clusters). `https://www.moe.gov.sg/about-us/organisation-structure/sd/school-clusters`
+
+I have extracted the all the data from the MOE and clean it up manually.
+
+```{r}
+primary_sch_list = c("North Vista Primary School","Palm View Primary School","Rivervale Primary School","Seng Kang Primary School","Xinmin Primary School","Ahmad Ibrahim Primary School","Chongfu School","Endeavour Primary School","Jiemin Primary School","Northland Primary School","Northoaks Primary School","Xishan Primary School","Singapore Chinese Girls' School (Primary)","Anchor Green Primary School","Compassvale Primary School","Edgefield Primary School","Fernvale Primary School","Hougang Primary School","Yio Chu Kang Primary School","Catholic High School (Primary)","Anchor Green Primary School","Compassvale Primary School","Edgefield Primary School","Fernvale Primary School","Hougang Primary School","Yio Chu Kang Primary School","Catholic High School (Primary)","Greendale Primary School","Horizon Primary School","Mee Toh School","Montfort Junior School","Nan Chiau Primary School","North Spring Primary School","Maris Stella High School (Primary)","Admiralty Primary School")
+
+primary_sch_list_2=c("Evergreen Primary School","Greenwood Primary School","Marsiling Primary School","Qihua Primary School","Woodgrove Primary School","Woodlands Ring Primary School","Anderson Primary School","Huamin Primary School","Naval Base Primary School","North View Primary School","Peiying Primary School","Sembawang Primary School","Yishun Primary School","CHIJ St Nicholas (Primary)","Ang Mo Kio Primary School","CHIJ Our Lady of Nativity","Holy Innocents' Primary School","Jing Shan Primary School","Mayflower Primary School","Punggol Primary School","Blangah Rise Primary School","Fairfield Methodist School (Primary)","New Town Primary School","Pei Tong Primary School","Queenstown Primary School","Anglo-Chinese Primary School","CHIJ (Toa Payoh) Primary School","First Toa Payoh Primary School","Kheng Cheng School","Marymount Convent School","Pei Chun Public School","Raffles Girls’ Primary School","Alexandra Primary School","Cantonment Primary School","CHIJ (Kellock)","Gan Eng Seng Primary School","Hong Wen School","Radin Mas Primary School","River Valley Primary School","Zhangde Primary School","Anglo-Chinese Junior","Bendemeer Primary School","Farrer Park Primary School","St. Andrew's Junior School","St. Joseph's Institution Junior","St. Margaret's Primary School","Cedar Primary School","CHIJ Our Lady of Good Counsel","St Gabriel’s Primary School","Xinghua Primary School","Yangzheng Primary School","Zhonghua Primary School","Ai Tong School","Kuo Chuan Presbyterian Primary School","Teck Ghee Primary School","Townsville Primary School","Elias Park Primary School","Meridian Primary School","Northshore Primary School","Punggol Cove Primary School","Punggol Green Primary School","Punggol View Primary School","Valour Primary School","Bedok Green Primary School","Junyuan Primary School","Poi Ching School","Red Swastika School","Temasek Primary School","Yu Neng Primary School","Angsana Primary School","Chongzheng Primary School","East Spring Primary School","Fern Green Primary School","Gongshang Primary School","Sengkang Green Primary School","Springdale Primary School","Yumin Primary School","Changkat Primary School","Damai Primary School","Kong Hwa School","St Anthony’s Canossian Primary School","Telok Kurau Primary School","Canossa Catholic Primary School","Fengshan Primary School","Geylang Methodist School (Primary)","Haig Girls’ School","Paya Lebar Methodist Girls’ School (Primary)","Tanjong Katong Primary School","Casuarina Primary School","Oasis Primary School","Park View Primary School","Pasir Ris Primary School","St. Hilda’s Primary School","Tampines North Primary School","Tampines Primary School","Waterway Primary School","White Sands Primary School","CHIJ (Katong) Primary","Maha Bodhi School","Ngee Ann Primary School","Opera Estate Primary School","St Stephen's Primary School","Tao Nan School","Clementi Primary School","Henry Park Primary School","Nan Hua Primary School","Qifa Primary School","Yuhua Primary School","Chua Chu Kang Primary School","Concord Primary School","De La Salle School","Nanyang Primary School","South View Primary School","Unity Primary School","Corporation Primary School","Frontier Primary School","Jurong West Primary School","Pioneer Primary School","West Grove Primary School","Xingnan Primary School","Methodist Girls' School (Primary)","Bukit View Primary School","Dazhong Primary School","Jurong Primary School","Keming Primary School","Lianhua Primary School","St. Anthony's Primary School","Beacon Primary School","Greenridge Primary School","Pei Hwa Presbyterian Primary School","Teck Whye Primary School","West View Primary School","Zhenghua Primary School","Boon Lay Garden Primary School","Bukit Panjang Primary School","CHIJ Our Lady Queen of Peace","Kranji Primary School","West Spring Primary School","Westwood Primary School","Yew Tee Primary School","Bukit Timah Primary School","Fuhua Primary School","Lakeside Primary School","Princess Elizabeth Primary School","Rulang Primary School","Shuqun Primary School")
+```
+
+We will make use of the same function to get the list of Primary School Coordinates of Primary School
+
+```{r}
+primary_sch_list_coor <- get_coords(primary_sch_list) 
+primary_sch_list_coor2 <- get_coords(primary_sch_list_2) 
+```
+
+Once we Again we will check if both have any error
+
+```{r}
+primary_sch_list_coor[(is.na(primary_sch_list_coor$postal) | is.na(primary_sch_list_coor$latitude) | is.na(primary_sch_list_coor$longitude) | primary_sch_list_coor$postal=="NIL"), ]
+```
+
+```{r}
+primary_sch_list_coor2[(is.na(primary_sch_list_coor2$postal) | is.na(primary_sch_list_coor2$latitude) | is.na(primary_sch_list_coor2$longitude) | primary_sch_list_coor2$postal=="NIL"), ]
+```
+
+From the results above, we can see that there are 7 addresses that does not contain any information at all:
+
+-   Maris Stella High School (Primary)
+
+-   CHIJ St Nicholas (Primary)
+
+-   CHIJ (Toa Payoh) Primary School
+
+-   St Gabriel's Primary School
+
+-   St Anthony's Canossian Primary School
+
+-   St. Hilda's Primary School
+
+-   St Stephen's Primary School
+
+I research deeper into the situation and found reverse search the malls to find their Postal Code, afterwards I will search out the name based on the One Map API and found the following:
+
+-   Maris Stella High School (Primary) is called `Maris Stella High School`
+
+-   CHIJ St Nicholas (Primary) is called `CHIJ St Nicholas`
+
+-   CHIJ (Toa Payoh) Primary School is called `CHIJ Primary (Toa Payoh)`
+
+-   St Gabriel's Primary School is called `Saint Gabriel Primary School`
+
+-   St Anthony's Canossian Primary School is called `Saint Anthony Canossian Primary School`
+
+-   St. Hilda's Primary School is called `Saint Hilda Primary School`
+
+-   St Stephen's Primary School is called `Saint Stephen School`
+
+We will just replace it in the names in the list again.
+
+```{r}
+primary_sch_list = c("North Vista Primary School","Palm View Primary School","Rivervale Primary School","Seng Kang Primary School","Xinmin Primary School","Ahmad Ibrahim Primary School","Chongfu School","Endeavour Primary School","Jiemin Primary School","Northland Primary School","Northoaks Primary School","Xishan Primary School","Singapore Chinese Girls' School (Primary)","Anchor Green Primary School","Compassvale Primary School","Edgefield Primary School","Fernvale Primary School","Hougang Primary School","Yio Chu Kang Primary School","Catholic High School (Primary)","Anchor Green Primary School","Compassvale Primary School","Edgefield Primary School","Fernvale Primary School","Hougang Primary School","Yio Chu Kang Primary School","Catholic High School (Primary)","Greendale Primary School","Horizon Primary School","Mee Toh School","Montfort Junior School","Nan Chiau Primary School","North Spring Primary School","Maris Stella High School","Admiralty Primary School")
+
+primary_sch_list_2=c("Evergreen Primary School","Greenwood Primary School","Marsiling Primary School","Qihua Primary School","Woodgrove Primary School","Woodlands Ring Primary School","Anderson Primary School","Huamin Primary School","Naval Base Primary School","North View Primary School","Peiying Primary School","Sembawang Primary School","Yishun Primary School","CHIJ St Nicholas","Ang Mo Kio Primary School","CHIJ Our Lady of Nativity","Holy Innocents' Primary School","Jing Shan Primary School","Mayflower Primary School","Punggol Primary School","Blangah Rise Primary School","Fairfield Methodist School (Primary)","New Town Primary School","Pei Tong Primary School","Queenstown Primary School","Anglo-Chinese Primary School","CHIJ Primary (Toa Payoh)","First Toa Payoh Primary School","Kheng Cheng School","Marymount Convent School","Pei Chun Public School","Raffles Girls’ Primary School","Alexandra Primary School","Cantonment Primary School","CHIJ (Kellock)","Gan Eng Seng Primary School","Hong Wen School","Radin Mas Primary School","River Valley Primary School","Zhangde Primary School","Anglo-Chinese Junior","Bendemeer Primary School","Farrer Park Primary School","St. Andrew's Junior School","St. Joseph's Institution Junior","St. Margaret's Primary School","Cedar Primary School","CHIJ Our Lady of Good Counsel","Saint Gabriel Primary School","Xinghua Primary School","Yangzheng Primary School","Zhonghua Primary School","Ai Tong School","Kuo Chuan Presbyterian Primary School","Teck Ghee Primary School","Townsville Primary School","Elias Park Primary School","Meridian Primary School","Northshore Primary School","Punggol Cove Primary School","Punggol Green Primary School","Punggol View Primary School","Valour Primary School","Bedok Green Primary School","Junyuan Primary School","Poi Ching School","Red Swastika School","Temasek Primary School","Yu Neng Primary School","Angsana Primary School","Chongzheng Primary School","East Spring Primary School","Fern Green Primary School","Gongshang Primary School","Sengkang Green Primary School","Springdale Primary School","Yumin Primary School","Changkat Primary School","Damai Primary School","Kong Hwa School","Saint Anthony Canossian Primary School","Telok Kurau Primary School","Canossa Catholic Primary School","Fengshan Primary School","Geylang Methodist School (Primary)","Haig Girls’ School","Paya Lebar Methodist Girls’ School (Primary)","Tanjong Katong Primary School","Casuarina Primary School","Oasis Primary School","Park View Primary School","Pasir Ris Primary School","Saint Hilda Primary School","Tampines North Primary School","Tampines Primary School","Waterway Primary School","White Sands Primary School","CHIJ (Katong) Primary","Maha Bodhi School","Ngee Ann Primary School","Opera Estate Primary School","Saint Stephen School","Tao Nan School","Clementi Primary School","Henry Park Primary School","Nan Hua Primary School","Qifa Primary School","Yuhua Primary School","Chua Chu Kang Primary School","Concord Primary School","De La Salle School","Nanyang Primary School","South View Primary School","Unity Primary School","Corporation Primary School","Frontier Primary School","Jurong West Primary School","Pioneer Primary School","West Grove Primary School","Xingnan Primary School","Methodist Girls' School (Primary)","Bukit View Primary School","Dazhong Primary School","Jurong Primary School","Keming Primary School","Lianhua Primary School","St Anthony's Primary School","Beacon Primary School","Greenridge Primary School","Pei Hwa Presbyterian Primary School","Teck Whye Primary School","West View Primary School","Zhenghua Primary School","Boon Lay Garden Primary School","Bukit Panjang Primary School","CHIJ Our Lady Queen of Peace","Kranji Primary School","West Spring Primary School","Westwood Primary School","Yew Tee Primary School","Bukit Timah Primary School","Fuhua Primary School","Lakeside Primary School","Princess Elizabeth Primary School","Rulang Primary School","Shuqun Primary School")
+```
+
+```{r}
+primary_sch_list_coor <- get_coords(primary_sch_list) 
+primary_sch_list_coor2 <- get_coords(primary_sch_list_2) 
+```
+
+We will need to check again to make sure that there is no missing data
+
+```{r}
+primary_sch_list_coor[(is.na(primary_sch_list_coor$postal) | is.na(primary_sch_list_coor$latitude) | is.na(primary_sch_list_coor$longitude) | primary_sch_list_coor$postal=="NIL"), ]
+```
+
+```{r}
+primary_sch_list_coor2[(is.na(primary_sch_list_coor2$postal) | is.na(primary_sch_list_coor2$latitude) | is.na(primary_sch_list_coor2$longitude) | primary_sch_list_coor2$postal=="NIL"), ]
+```
+
+Since we have confirm that the data is clean, we will just rename the columns to make it easier to understand.
+
+```{r}
+primary_sch_list_coor_full <- rbind(primary_sch_list_coor, primary_sch_list_coor2)
+```
+
+```{r}
+rename(primary_sch_list_coor_full, "name" = "address")
+```
+
+We can write it into a shape file for us to access everything again.
+
+```{r}
+primary_sch_sf <- st_as_sf(primary_sch_list_coor_full, coords=c("longitude", "latitude"), crs=4326)
+```
+
+```{r}
+#| eval: false
+st_write(primary_sch_sf, "data/extracted/primary_school.shp")
+```
+
+[**Good Primary School**]{.underline}
+
+Education and academic institutions are an especially important locational factors for families with children, or expect to have children. Since it has already been proven that [distance affects priority admission](https://www.moe.gov.sg/primary/p1-registration/distance), the number of good Primary School around the area is important as well. For this analysis, our focus will be on the primary-school level of education, we would need to understand what is defined as "Good Primary School". MOE does not released a list of Primary Schools ranked based on their result as such, there is now way to determine how the Primary School are actually ranked.
+
+One possible example of the ranking would be the [schlah's Primary School Rankings](https://schlah.com/primary-schools) from the 2020. Although the list is a bit dated, It does offer a transparent method on how they determined what is considered a "Good Primary School" primarily through:
+
+-   Popularity in Primary 1 (P1) Registration: 20%
+
+-   Gifted Education Programme (GEP): 20%
+
+-   Special Assistance Plan (SAP): 15%
+
+-   Achievements in the Singapore Youth Festival Arts Presentation: 15%
+
+-   Representation in the Singapore National School Games: 15%
+
+-   Singapore Uniformed Groups Unit Recognition: 15%
+
+For my analysis, I will consider the Top 10 Primary School as Good Primary School:
+
+![](images/image-476731336.png)
+
+```{r}
+good_primary_school <- c("Nanyang Primary School","Tao Nan School","Catholic High School (Primary)","Nan Hua Primary School","Saint Hilda Primary School","Henry Park Primary School","Anglo-Chinese Primary School","Raffles Girls’ Primary School","Pei Hwa Presbyterian Primary School","CHIJ St Nicholas")
+```
+
+We will once again make use of the OneMap API to get the theme
+
+```{r}
+good_primary_school_coor <- get_coords(good_primary_school) 
+```
+
+We will need to check again to make sure that there is no missing data.
+
+```{r}
+good_primary_school_coor[(is.na(good_primary_school_coor$postal) | is.na(good_primary_school_coor$latitude) | is.na(good_primary_school_coor$longitude) | good_primary_school_coor$postal=="NIL"), ]
+```
+
+Since we have confirm that the data is cleaned we can save it as a shape file to reference again.
+
+```{r}
+rename(good_primary_school_coor, "name" = "address")
+```
+
+```{r}
+good_primary_sch_sf <- st_as_sf(good_primary_school_coor, coords=c("longitude", "latitude"), crs=4326)
+```
+
+```{r}
+#| eval: false
+st_write(good_primary_sch_sf, "data/extracted/good_primary_school.shp")
+```
+
+[**CBD**]{.underline}
+
+Lastly, we need to factor in the proximity to the Central Business District - in the Downtown Core. It's located in the southwest of Singapore. As such, let's take the coordinates of Downtown Core to be the coordinates of the CBD, we will store it as a CBD as well.
+
+```{r}
+#| eval: false
+lat <- 1.287953
+lng <- 103.851784
+
+cbd_sf <- data.frame(lat, lng) %>%
+  st_as_sf(coords = c("lng", "lat"), crs=4326)
+
+st_write(cbd_sf, "data/extracted/cbd.shp")
+```
+
+# Load in all the shape data
+
+Remember all the Shape File that we have save from the above pre processing we can now load them again.
+
+```{r}
+mpsz <- st_read(dsn="data/geospatial", "MPSZ-2019")
+national_boundary <- st_read(dsn="data/geospatial", "CostalOutline")
+childcare <- st_read(dsn="data/geospatial", layer="childcare")
+eldercare <- st_read(dsn="data/geospatial", layer="eldercare")
+hawker_centre <- st_read(dsn="data/geospatial", layer="hawkercentre")
+kindergarten <- st_read(dsn="data/geospatial", layer="kindergartens")
+parks <- st_read(dsn="data/geospatial", layer="nationalparks")
+libraries <- st_read(dsn="data/geospatial", layer="libraries")
+isp_clinics <- st_read(dsn="data/geospatial", layer="moh_isp_clinics")
+tourism <- st_read(dsn="data/geospatial", layer="tourism")
+bus_stop <- st_read(dsn="data/geospatial", layer="BusStop")
+primary_sch <- st_read(dsn="data/geospatial", layer="primary_sch") %>% st_transform(primary_sch, crs=4326)
+top_primary_sch <- st_read(dsn="data/geospatial", layer="top10_pri_sch") %>% st_transform(top_primary_sch, crs=4326)
+registered_pharmacy <- st_read(dsn="data/geospatial", layer="registered_pharmacy") %>% st_transform(registered_pharmacy, crs=4326)
+CBD <- st_read(dsn="data/geospatial", layer="cbd") %>% st_transform(CBD, crs=4326)
+mrts <- st_read(dsn="data/geospatial", layer="mrt_lrt") %>% st_transform(mrts, crs=4326)
+```
+
+We will need to convert the shape file into CRS 3414 just in case.
+
+```{r}
+childcare3414 <- st_transform(childcare, crs=3414)
+eldercare3414 <- st_transform(eldercare, crs=3414)
+hawker_centre3414 <- st_transform(hawker_centre, crs=3414)
+kindergarten3414 <- st_transform(kindergarten, crs=3414)
+parks3414 <- st_transform(parks, crs=3414)
+libraries3414 <- st_transform(libraries, crs=3414)
+isp_clinics3414 <- st_transform(isp_clinics, crs=3414)
+tourism3414 <- st_transform(tourism, crs=3414)
+primary_sch_sf_3414 <- st_transform(primary_sch, crs=3414)
+top_primary_sch_sf_3414 <- st_transform(top_primary_sch, crs=3414)
+registered_pharmacy_3414 <- st_transform(registered_pharmacy, crs=3414)
+CBD_3414 <- st_transform(CBD, crs=3414)
+mrts_3414 <- st_transform(mrts, crs=3414)
+bus_stop_3414 <- st_transform(bus_stop, crs=3414)
+```
+
+We already have a shopping mall shape file that we can used from the pre processing done above. Another method which is faster could be done if you already have a csv file, which can be done in the code chunk below.
+
+```{r}
+shopping_mall <- read_csv("data/aspatial/shopping_mall.csv")
+```
+
+Please note that there must be longitude and latitude attributes in the csv file.
+
+```{r}
+shopping_mall_sf <- st_as_sf(shopping_mall, coords=c("longitude", "latitude"), crs=4326)
+shopping_mall_sf_3414 <- st_transform(shopping_mall_sf, crs=3414)
+```
+
+### Importing SuperMarket Data
+
+```{r}
+supermarket_sf <- st_read("data/geospatial/supermarkets.kml") 
+```
+
+Notice how the supermarket has a Z coordinates. The Z coordinates only contains 0 values and hence we would need to drop it.
+
+```{r}
+supermarket_sf <- st_zm(supermarket_sf)
+supermarket_sf_3414 <- st_transform(supermarket_sf, crs=3414)
+```
+
+## Importing the Resale Data
+
+```{r}
+resale_flat_full <- read_csv("data/aspatial/resale-flat-prices-from-jan-2017-onwards.csv")
+glimpse(resale_flat_full)
+```
+
+Taking a look at the data we have noticed that the data set contains 11 columns with 23656 observations. Depending on when your data is loaded, it can have more observations. They have the following columns: ***months, town, flat_type, block, street_name, storey_range, floor_area_sqm, flat_model, remaining_lease, resale_price.***
+
+# Transforming the Resale Data
+
+::: callout-important
+The following steps are made with reference to: Take Home Exercise 3 done by: NOR AISYAH BINTE AJIT. Check out her work [here](https://aisyahajit2018-is415.netlify.app/posts/2021-11-07-take-home-exercise-3/).
+:::
+
+Now that we have correctly filter out the dataset that we wish to use, we are left with another problem. Lets have a look at our data as an example for me to better illustrate the problem.
+
+```{r}
+head(resale_flat_full)
+```
+
+In our analysis, we are looking at the following key_factors:
+
+-   Area of the unit
+
+-   Floor level
+
+-   Remaining lease
+
+-   Age of the unit
+
+With regards to the key factor. Notice how there are 4 key issues that we need to addressed:
+
+1.  **No geospatial data:** There is no geospatial data for us to plot out the points. This is worrying as the geospatial data is needed for us to perform geographically weighted regression. Fortunately, the data frame provided 2 columns that are critical in retrieving the coordinates of the flat, however it is found in ***2 different columns:*** **block, street_name**. We would need to concatenate them together into to search for their coordinates.
+
+2.  **remaining_lease is recorded as a string:** The remaining leases data is found as a string, when it should be an continuos variable. It is current written as a string currently, which will be treated as a categorical data instead, as such we would need to convert it into the correct format first.
+
+3.  **storey_range is given as a range:** In our dataset, the floor of the exact unique is not given, but rather a range is given this could be a huge potential issue as this would mean thatthe data will treated as a categorical data. We would need to convert it into the correct format first
+
+4.  **No age**: There is no age in our dataset, which would mean that we would need to solve this issue as well.
+
+## Retrieving Postal Codes and Coordinates of the address
+
+As mentioned before, one of the key issues that we would need to perform is to retrieve all the relevant data such as postal code and coordinates of the address that is needed for later analysis.
+
+The steps are as followed:
+
+1.  Combining Block and Street Name to form an address
+
+2.  Filtering out Unique Address
+
+3.  Retrieving coordinates from OneMap.API
+
+4.  Inspecting the Result and Fixing the Issues
+
+### Step 1: Combining Block and Street Name to form an address
+
+In this step, we will be combining the street_name and block to form an address.
+
+We can make use of the `paste()` function from base R to concatenate the two data together. Find out more [here](https://rdrr.io/r/base/paste.html).
+
+Afterwards, we will placed the data in a new columns called address in the dataframe by using the `mutate()` function from dplyr. Find out more about [here](https://dplyr.tidyverse.org/reference/mutate.html).
+
+```{r}
+resale_flat_full <- resale_flat_full %>%
+  mutate(resale_flat_full, address = paste(block,street_name))
+
+head(resale_flat_full)
+```
+
+### Step 2: Filtering out Unique Address.
+
+This step is performed in order to minimize the amount of API Call that we need to perform. Furthermore, this also makes it easier for us to see which of the address will result in an error.
+
+We will first get the unique address out first before sorting the data. This can be done with the `sort()` from base R. Find out more [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/sort).
+
+```{r}
+add_list <- sort(unique(resale_flat_full$address))
+```
+
+### Step 3: Retrieiving Coordinates from OneMap API
+
+To retrieve the coordinates from OneMap API, it will be easier to create a function to retrieve all the coordinate instead. To do so, lets take a deep dive into the OneMap API. Documentation can be found [here](https://www.onemap.gov.sg/docs/#onemap-rest-apis). In this case, we will be making use of the OneMap API search API to retrieve the necessary coordinates.
+
+According to the documentation, the request requires the following.
+
+-   **searchVal:** Keywords entered by user that is used to filter out the results.
+
+-   **returnGeom {Y/N}:** Checks if user wants to return the geometry.
+
+-   **getAddrDetails {Y/N}**: Checks if user wants to return address details for a point.
+
+-   **pageNum**: Specifies the page to retrieve your search results from. *This is optional (We will not be using this in this case)*
+
+A provided example link would be something like this: *https://developers.onemap.sg/commonapi/search?searchVal=revenue&returnGeom=Y&getAddrDetails=Y&pageNum=1*
+
+We are only interested in the LATITUDE and LONGITUDE data in this case.
+
+Now that we understand the API better, we will now create a function that will help us sort through all the data. The following code chunk below does a number of critical steps:
+
+1.  We will create a data frame called postal_coords that will store all the data frame.
+
+2.  We will make use of the `GET()` function from httr package to make a get request call. Find out more [here](https://httr.r-lib.org/reference/GET.html).
+
+3.  We will create a data frame called new role to store all the coordinates
+
+4.  We also need to check the number of responses returned and append to the main data frame accordingly. This is because there are a few conditions to take note of
+
+    -   The number of results can be greater than one or none at all. (*indicated by found* in the JSON).
+
+    -   The results returned can have no postal code (*which we will not consider as valid)*
+
+    -   We will take the first result with a valid postal code as the correct coordinates.
+
+5.  Lastly, we will append the returned response (**new_row**) with the necessary fields to the main dataframe (**postal_coords**) using `rbind()` function of base R package. Find out more [here](https://rdrr.io/r/base/cbind.html).
+
+All of this can be found in the code chunk below:
+
+```{r}
+get_coords <- function(add_list){
+  
+  # Create a data frame to store all retrieved coordinates
+  postal_coords <- data.frame()
+    
+  for (i in add_list){
+    #print(i)
+
+    r <- GET('https://developers.onemap.sg/commonapi/search?',
+           query=list(searchVal=i,
+                     returnGeom='Y',
+                     getAddrDetails='Y'))
+    data <- fromJSON(rawToChar(r$content))
+    found <- data$found
+    res <- data$results
+    
+    # Create a new data frame for each address
+    new_row <- data.frame()
+    
+    # If single result, append 
+    if (found == 1){
+      postal <- res$POSTAL 
+      lat <- res$LATITUDE
+      lng <- res$LONGITUDE
+      new_row <- data.frame(address= i, postal = postal, latitude = lat, longitude = lng)
+    }
+    
+    # If multiple results, drop NIL and append top 1
+    else if (found > 1){
+      # Remove those with NIL as postal
+      res_sub <- res[res$POSTAL != "NIL", ]
+      
+      # Set as NA first if no Postal
+      if (nrow(res_sub) == 0) {
+          new_row <- data.frame(address= i, postal = NA, latitude = NA, longitude = NA)
+      }
+      
+      else{
+        top1 <- head(res_sub, n = 1)
+        postal <- top1$POSTAL 
+        lat <- top1$LATITUDE
+        lng <- top1$LONGITUDE
+        new_row <- data.frame(address= i, postal = postal, latitude = lat, longitude = lng)
+      }
+    }
+
+    else {
+      new_row <- data.frame(address= i, postal = NA, latitude = NA, longitude = NA)
+    }
+    
+    # Add the row
+    postal_coords <- rbind(postal_coords, new_row)
+  }
+  return(postal_coords)
+}
+```
+
+With the function define we can call the function to generate out the data frame of the postal codes.
+
+Please note that this function does take some time to run.
+
+```{r}
+coords <- get_coords(add_list)
+```
+
+### Step 4: Inspecting the Result and Fixing the Issues
+
+Remember all the issues that we can face when making the api call, we would need to check to make sure that all the data is accounted for.
+
+We can make use of the `is.na()` function to check which street address contains any NA values
+
+```{r}
+coords[(is.na(coords$postal) | is.na(coords$latitude) | is.na(coords$longitude) | coords$postal=="NIL"), ]
+```
+
+::: callout-note
+The issues can be different so make sure to correct them based on your own observations.
+:::
+
+Based on the data frame above, we have noticed that there seems to be 2 address with no postal code
+
+-   215 CHOA CHU KANG
+
+-   216 CHOA CHU KANG
+
+When searching directly with OneMap API instead, we found that OneMap API classified them as the same building instead with the results being ***"BLK 216 AND 215 CHOA CHU KANG CENTRAL".*** Furthermore a brief check on the website: property indicates the postal code as
+
+-   [680215](https://www.propertyguru.com.sg/singapore-property-listing/hdb/choa-chu-kang/choa-chu-kang-central_104043/215)
+
+-   [680216](https://www.propertyguru.com.sg/singapore-property-listing/hdb/choa-chu-kang/choa-chu-kang-central_104043/216)
+
+We shall proceed with keeping them as the same as there is the latitude and longitude data.
+
+## Transforming Remaining Lease
+
+In this section, we will be transforming the remaining lease into an integer.
+
+First, we will split the remaining lease into years and months columns for calculation. To do so, we will make use of `str_sub()` function from tidyverse. Find out more [here](https://stringr.tidyverse.org/reference/str_sub.html).
+
+we will convert the string into an integer using the `as.integer()` function from base R. Find out more [here](https://rdrr.io/r/base/integer.html).
+
+```{r}
+resale_flat_full <- resale_flat_full %>%
+  mutate(resale_flat_full, remaining_lease_yr = as.integer(str_sub(remaining_lease, 0, 2))) %>%
+  mutate(resale_flat_full, remaining_lease_mth = as.integer(str_sub(remaining_lease, 9, 11)))
+```
+
+We will then convert the NA values of the remaining_lease_mth columns into 0. We can make use of the `is.na()` function from base R. Find out more [here](https://rdrr.io/r/base/NA.html).
+
+Followed by changing the remaining_lease_yr into months.
+
+Finally, we can sum the two columns together with `rowSums()` function from base R. Find out more [here](https://rdrr.io/r/base/colSums.html).
+
+```{r}
+resale_flat_full$remaining_lease_mth[is.na(resale_flat_full$remaining_lease_mth)] <- 0
+resale_flat_full$remaining_lease_yr <- resale_flat_full$remaining_lease_yr * 12
+resale_flat_full <- resale_flat_full %>% 
+  mutate(resale_flat_full, remaining_lease_mths = rowSums(resale_flat_full[, c("remaining_lease_yr", "remaining_lease_mth")]))
+```
+
+## Transforming Storey Range
+
+Categorical variables require special attention in regression analysis because, unlike continuous variables, they *cannot* be entered into the regression equation just as they are. A method we can used to convert categorical variables into continuous variable is called "treatment" coding, or "dummy" coding. This method involve converting the categorical variable into a reference number.
+
+However, we must understand that ***storey range*** is an ordinal data, in other words, each categorical has an order, or in this case, low to high. Using a dummy variable might not make as much sense in this case. Hence, we will assign a higher value to higher floors. The reasoning behind it is that a higher floor offers more privacy, better security and lower noise pollution due to the high height.
+
+We will first create a dataframe to store all the unique storey range and at the same time sort them. After they are sorted we will create a list of encoding based on the unique values then merging them to form a data frame
+
+```{r}
+storeys <- sort(unique(resale_flat_full$storey_range))
+storey_order <- 1:length(storeys)
+storey_range_order <- data.frame(storeys, storey_order)
+```
+
+```{r}
+head(storey_range_order)
+```
+
+From the above results, we can see that:
+
+-   01 TO 03 is assigned the value: 1
+
+-   04 TO 06 is assigned the value: 2
+
+-   07 TO 09 is assigned the value: 3
+
+-   10 TO 12 is assigned the value: 4
+
+-   13 TO 15 is assigned the value: 5
+
+-   16 TO 18 is assigned the value: 6
+
+Hence, the storey range are in the correct order
+
+## Transforming Age
+
+Age is one of the key factors that we are using in our analysis. However, there is no direct reference to age of the HDB. One method we can use is to infer the age of the building based on the remaining lease. It is well known that Singapore HDB are leased to us for 99 years as such we can calculate the age based on the difference between the total lease and remaining lease.
+
+```{r}
+resale_flat_full <- resale_flat_full %>% 
+  mutate(resale_flat_full, age = 99 * 12 - resale_flat_full$remaining_lease_mths)
+```
+
+```{r}
+head(resale_flat_full)
+```
+
 ```{r}
 resale_flat_full <- left_join(resale_flat_full, storey_range_order, by= c("storey_range" = "storeys"))
 
@@ -389,7 +1284,11 @@ rs_coords_sf <- st_as_sf(rs_coords,
   st_transform(crs = 3414)
 ```
 
-### Calculating Proximity
+## Calculating Proximity
+
+One of the things we need to find is the proximity to particular facilities as one of factors.
+
+Megan has kindly provided the function for us to use above. First, she use compute with `st_distance(),` to compute the proximity to the facility and find the closest facility (shortest distance) with the `rowMins()` function of our matrixStats package. The values will be appended to the data frame as a new column.
 
 ```{r}
 proximity <- function(df1, df2, varname) {
@@ -419,6 +1318,12 @@ rs_coords_sf <-
   proximity(., libraries3414, "PROX_LIBRARY")
 ```
 
+## Facility Count Within Radius
+
+Other than proximity, which calculates the shortest distance, we also want to find the *number* of facilities within a particular radius as another factors.
+
+Megan has kindly provided the function for us to use above. First, she use `st_distance()` to compute the distance between the flats and the desired facilities, and then sum up the observations with `rowSums()`. The values will be appended to the data frame as a new column.
+
 ```{r}
 num_radius <- function(df1, df2, varname, radius) {
   dist_matrix <- st_distance(df1, df2) %>%
@@ -440,15 +1345,33 @@ rs_coords_sf <-
   num_radius(., primary_sch_sf_3414, "NUM_PRI_SCH", 1000)
 ```
 
+## Saving the Data into RDS
+
+Well we do not really need all the columns, and we also do not want to read all the files again, we can save it as a rds format so that we can access it again.
+
+Before we save it into RDS, we can clean up columns that we do not really need.
+
 ```{r}
 rs_coords_full_rds <- write_rds(rs_coords_sf, "data/rds/rs_coords_full.rds")
 ```
 
-### Generating the new LD
+You have now pre processed the data and you can now load the data into the Shiny application
+
+# Building the Models
+
+::: callout-important
+The steps below are for the generating the model. The steps below are not necessary to use the Shiny but can be used as a reference.
+:::
+
+## Generating the new GeoGraphically Weighted Linear Model
+
+### Loading the Data
 
 ```{r}
 rs_coords_full_rds <- read_rds("data/rds/rs_coords_full.rds")
 ```
+
+### Filtering the Data
 
 ```{r}
 start_date <- "2021-01"
@@ -486,9 +1409,13 @@ resale_flat_full_perdict<- resale_flat_full %>% select(3:26)
 rs_coords_pred_rds <- write_rds(as_Spatial(tail(resale_flat_full_perdict,10)), "data/rds/rs_coords_predict.rds")
 ```
 
+### Creating a Linear Regression Model
+
 ```{r}
 resale_mlr1 <- lm(PRICE ~ AREA_SQM + LEASE_YRS + AGE + STOREY_ORDER + PROX_CBD + PROX_CHILDCARE + PROX_ELDERCARE + PROX_HAWKER + PROX_MRT + PROX_PARK + PROX_TOPPRISCH + PROX_MALL + PROX_SPRMKT + PROX_CLINIC + PROX_PHARMACY + PROX_TOURISM  + PROX_LIBRARY + NUM_KNDRGTN + NUM_CHILDCARE + NUM_BUS_STOP + NUM_ISP_CLIN + NUM_REGISTERED_PHARM + NUM_LIBRARIES, resale_flat_full_nogeo)
 ```
+
+## Moran I Calculation 
 
 ```{r}
 resale_res_sf <- cbind(resale_flat_full,resale_mlr1$residuals) %>%
@@ -497,13 +1424,19 @@ resale_res_sf <- cbind(resale_flat_full,resale_mlr1$residuals) %>%
 resale_sp <- as_Spatial(resale_res_sf)
 ```
 
+### Calculating Nearest Neighbour
+
 ```{r}
 nb <- dnearneigh(coordinates(resale_sp), 0, 2500, longlat = FALSE)
 ```
 
+### Calculating Neighborhood Matrix
+
 ```{r}
 nb_lw <- nb2listw(nb, style = 'W', zero.policy = TRUE)
 ```
+
+### Calculating Moran I
 
 ```{r}
 moran_value <- lm.morantest(resale_mlr1, nb_lw)
@@ -514,14 +1447,19 @@ moran_value_rds <- write_rds(moran_value, "data/rds/moran_value.rds")
 ```
 
 ```{r}
-moran_value_rds <- read_rds("data/rds/moran_value.rds")
 moran_value_rds
 ```
+
+## Generating Geographically Weighted Regression
+
+### Calculating Adaptive Bandwidth 
 
 ```{r}
 bw_adaptive <- bw.gwr(formula = PRICE ~ AREA_SQM + LEASE_YRS + AGE + STOREY_ORDER + PROX_CBD + PROX_CHILDCARE + PROX_ELDERCARE + PROX_HAWKER + PROX_MRT + PROX_PARK + PROX_TOPPRISCH + PROX_MALL + PROX_SPRMKT + PROX_CLINIC + PROX_PHARMACY + PROX_TOURISM  + PROX_LIBRARY + NUM_KNDRGTN + NUM_CHILDCARE + NUM_BUS_STOP + NUM_ISP_CLIN + NUM_REGISTERED_PHARM + NUM_LIBRARIES, data=resale_sp, approach="CV", kernel="gaussian",
                       adaptive=TRUE, longlat=FALSE)
 ```
+
+### Building GWR Model
 
 ```{r}
 gwr_adaptive <- gwr.basic(formula = PRICE ~ AREA_SQM + LEASE_YRS + AGE + STOREY_ORDER + PROX_CBD + PROX_CHILDCARE + PROX_ELDERCARE + PROX_HAWKER + PROX_MRT + PROX_PARK + PROX_TOPPRISCH + PROX_MALL + PROX_SPRMKT + PROX_CLINIC + PROX_PHARMACY + PROX_TOURISM  + PROX_LIBRARY + NUM_KNDRGTN + NUM_CHILDCARE + NUM_BUS_STOP + NUM_ISP_CLIN + NUM_REGISTERED_PHARM + NUM_LIBRARIES,
