@@ -90,7 +90,7 @@ The RDS file you uploaded is not a table.
 
 The RDS File is too big. Due to the limitations of the shiny app it can only receive RDS file that is 5MB and below.
 
-### EDA
+## EDA
 
 This section will show you the critical information of the given data set. All the plots here are dynamic and will update according to the new information given. This section is supposed to highlight more insights about the data before the model is build.
 
@@ -98,13 +98,13 @@ Adjusting the filters here will have an effect on the model building.
 
 ![](images/image-1526870859.png)
 
-### CorrPlot
+## CorrPlot
 
 The Correlation Plot will need to be done before we build our model. The Correlation Plot is Reactive, meaning that it changes based on the columns of the data given to it. You will need to reference this page again when building your model.
 
 ![](images/image-332029470.png)
 
-### Multiple Linear Regression
+## Multiple Linear Regression
 
 In This tab the multiple Linear Regression is build here. You can defined what variables you want to add to the model and what variables you want to. Test are also provided to test the accuracy of the model. With the exception of the Moran I Values, all the other variables are reactive.
 
@@ -112,7 +112,7 @@ In This tab the multiple Linear Regression is build here. You can defined what v
 
 If the Correlation Plot is not clear enough, highly correlated Attributes will be displayed as NA in the Linear Regression Plot.
 
-#### Computing Moran I
+### Computing Moran I
 
 To Compute Moran I, you will need to set the variables of the Weight Matrix.
 
@@ -122,7 +122,7 @@ Pressing on Compute Moran will result in the Moran I being calculated in Real Ti
 
 ![](images/Screenshot%202023-04-14%20at%2011.48.31%20PM.png)
 
-### Geographically Weighted Linear Regression
+## Geographically Weighted Linear Regression
 
 In this tab, a pre calculated model of GWR Model is being displayed. All the Dependent variable should already have been selected in the Multiple Linear Regression Tab.
 
@@ -134,7 +134,7 @@ Note that doing either will result in a long loading time.
 
 ![](images/image-1974336337.png)
 
-### Predicting the HDB Price.
+## Predicting the HDB Price.
 
 In this tab, the user can predict the HDB Prices. You can use either of the models Multiple Linear Regression or the Geographically Weighted Regression.
 
@@ -144,7 +144,7 @@ For Geographically Weighted Regression, please upload a Spatial Data frame for i
 
 ![](images/image-1367324794.png)
 
-### Interactive Map
+## Interactive Map
 
 You can view an interactive map of all the data points. Find out where the HDB is and how the range of the price in this map. To prevent tmap from crashing in the shiny app, we have limited the maximum amount of points that will be displayed. Tmap is interactive and you can alter the variables
 

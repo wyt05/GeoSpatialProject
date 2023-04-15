@@ -46,11 +46,11 @@ acm-metadata:
   # if present, replaces the list of authors in the page header.
   # shortauthors: Trovato et al.
 
-  # keywords:
-  #  - datasets
-  #  - neural networks
-  #  - gaze detection
-  #  - text tagging
+  keywords:
+    - HDB Prices
+    - Linear Regression
+    - Geographically Weighted Regression
+    - Exploratory Data Analysis
   
   # if uncommented, this produces a teaser figure
   # 
@@ -70,7 +70,7 @@ abstract: |
 
 # Motivation
 
-With the price of HDB resale flats seeing tremendous growth over the years, and news such as [\"**HDB resale prices accelerate in Jan as million-dollar deals surge by 42%: SRX, 99.co\"**](https://www.businesstimes.com.sg/property/hdb-resale-prices-accelerate-jan-million-dollar-deals-surge-42-srx-99co) or [**\"HDB resale prices rise 2.3% in Q4, slowest increase in 2022\"**](https://www.straitstimes.com/singapore/housing/hdb-resale-prices-rise-23-in-q4-slowest-increase-in-2022#:~:text=Resale%20prices%20grew%20by%2010.4,latest%20round%20of%20property%20curbs.), Singaporeans face the ever-growing concern as to whether or not they are paying a fair price for their flats. Given the lack of accessibility to geographically weighted models, users may find it difficult to assess what factors impact the resale price of an HDB flat; indeed, current estimators often only consider linear relationships between dependent and independent variables and fail to include geographical predictors in their models, which may limit the ability of one regression to explain HDB resale prices; however, geographically weighted regressions provide a more sophisticated way to model spatial heterogeneity by accounting for the unique characteristics of different neighborhoods.
+With the price of HDB resale flats seeing tremendous growth over the years, and news such as \"**HDB resale prices accelerate in Jan as million-dollar deals surge by 42%: SRX, 99.co\"** [@ducky23] or [**\"HDB resale prices rise 2.3% in Q4, slowest increase in 2022\"**](https://www.straitstimes.com/singapore/housing/hdb-resale-prices-rise-23-in-q4-slowest-increase-in-2022#:~:text=Resale%20prices%20grew%20by%2010.4,latest%20round%20of%20property%20curbs.) [@ducky32], Singaporeans face the ever-growing concern as to whether or not they are paying a fair price for their flats. Given the lack of accessibility to geographically weighted models, users may find it difficult to assess what factors impact the resale price of an HDB flat; indeed, current estimators often only consider linear relationships between dependent and independent variables and fail to include geographical predictors in their models, which may limit the ability of one regression to explain HDB resale prices; however, geographically weighted regressions provide a more sophisticated way to model spatial heterogeneity by accounting for the unique characteristics of different neighborhoods.
 
 Despite the advantages of geographically weighted regressions, they can be difficult for casual users without specialized skills to use effectively. Thus, our research comes in handy to give the right tools to Singaporeans as we aim to:
 
