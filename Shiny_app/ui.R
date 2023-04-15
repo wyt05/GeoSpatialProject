@@ -197,7 +197,7 @@ fluidPage( theme=shinytheme("cyborg"),
                                    "",
                                    withSpinner(dataTableOutput('key_summaries'), type = 2),
                                    
-                                   h6("You can find find the Top 10 towns of the indicated variable here."),
+                                   h6("You can find average of the variable based on towns here."),
                                    withSpinner(dataTableOutput('top_towns'), type = 2),
                                    
                                    h3("Data Frame"),
@@ -297,18 +297,21 @@ fluidPage( theme=shinytheme("cyborg"),
                                    h4("Checking for Multi-Colinearlity"),
                                    withSpinner(verbatimTextOutput("linear_regress_1"), type = 2),
                                    
-                                   h6("Remove All Variables with VIF more than 10 as they are signs of collinearity"),
+                                   h6("Remove All Variables with VIF more than 10 as they are signs of non linearity"),
                                    h6(),
-                                   h4("Testing for Non Linearlity"),
+                                   h4("Testing for Homoscedasticity"),
                                    withSpinner(plotOutput("linear_regress_2"), type = 2),
                                            
-                                   h6("Try to keep all the points close to the line"),
+                                   h6("Ensure that all the points are scattered near the line"),
                                    h6(" "),
                                    
                                    h4("Test for Normality Assumption"),
                                    withSpinner(plotOutput("linear_regress_3"), type = 2),
                                    
-                                   h6("Try to keep all the residues resemble a Normal Distribution"),
+                                   h6("All the residues must resemble a Normal Distribution"),
+                                   
+                                   h4("Conclusion"),
+                                   h6("Should the model fail any of the test above, please note that the model is well fitted"),
                                    
                                    h3("Testing for Auto Spatial Correlation"),
                                    h6("Since we are planning to build a Geographically Weighted Linear Regression Model, we would need to perform a Test of Spatial Auto Correlation"),

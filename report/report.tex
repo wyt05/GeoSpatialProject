@@ -90,29 +90,6 @@
 \makeatletter
 \def\fps@figure{htbp}
 \makeatother
-\newlength{\cslhangindent}
-\setlength{\cslhangindent}{1.5em}
-\newlength{\csllabelwidth}
-\setlength{\csllabelwidth}{3em}
-\newlength{\cslentryspacingunit} % times entry-spacing
-\setlength{\cslentryspacingunit}{\parskip}
-\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
- {% don't indent paragraphs
-  \setlength{\parindent}{0pt}
-  % turn on hanging indent if param 1 is 1
-  \ifodd #1
-  \let\oldpar\par
-  \def\par{\hangindent=\cslhangindent\oldpar}
-  \fi
-  % set entry spacing
-  \setlength{\parskip}{#2\cslentryspacingunit}
- }%
- {}
-\usepackage{calc}
-\newcommand{\CSLBlock}[1]{#1\hfill\break}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
-\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \definecolor{mypink}{RGB}{219, 48, 122}
 \makeatletter
@@ -304,11 +281,10 @@ Regression, Exploratory Data Analysis}
 \section{Motivation}\label{motivation}}
 
 With the price of HDB resale flats seeing tremendous growth over the
-years, and news such as "\textbf{HDB resale prices accelerate in Jan as
-million-dollar deals surge by 42\%: SRX, 99.co"} \citep{ducky23} or
-\href{https://www.straitstimes.com/singapore/housing/hdb-resale-prices-rise-23-in-q4-slowest-increase-in-2022\#:~:text=Resale\%20prices\%20grew\%20by\%2010.4,latest\%20round\%20of\%20property\%20curbs.}{\textbf{"HDB
-resale prices rise 2.3\% in Q4, slowest increase in 2022"}}
-\citep{ducky32}, Singaporeans face the ever-growing concern as to
+years, and news such as ``\textbf{HDB resale prices accelerate in Jan as
+million-dollar deals surge by 42\%: SRX, 99.co''} \citep{Yong23} or
+\textbf{``HDB resale prices rise 2.3\% in Q4, slowest increase in
+2022''} \citep{Liew23}, Singaporeans face the ever-growing concern as to
 whether or not they are paying a fair price for their flats. Given the
 lack of accessibility to geographically weighted models, users may find
 it difficult to assess what factors impact the resale price of an HDB
@@ -364,61 +340,60 @@ We will now discuss past research in the fields of hedonic housing price
 models and the importance of geography in these models. We shall review
 three pieces of work in the following paragraphs.
 
-Our
-\href{https://journals.sagepub.com/doi/abs/10.1177/0042098013492234?journalCode=usja}{first
-article}, ``Spatial Heterogeneity in Hedonic House Price Models: The
-Case of Austria.'' by M. Helbich, C. Leitner, and A. Kapusta,
-investigates the spatial heterogeneity of housing prices in Austria by
-using a hedonic pricing model. This statistical model estimates the
-value of a property based on its attributes, size, location, and other
-factors, such as proximity to different amenities (e.g., shopping malls
-and parks). In this paper, the writers apply geographically weighted
-regression (GWR) analysis to identify local spatial patterns of the
-housing market and examine the spatial variability of the hedonic price
-model coefficients. In their research, they deduce that the GWR approach
-provides more accurate predictions of housing prices than traditional
-regression methods, which assume spatial homogeneity of coefficients.
-Their study revealed that housing prices are significantly influenced by
-local characteristics of neighborhoods as accessibility, environment,
-and social amenities, to name a few. Their paper suggests that the
-spatial heterogeneity of housing prices is crucial to accurately model
-and analyze the housing market, especially in geographically diverse
-regions like Austria. In our case, we consider the paper's methodology
-and insights valuable for our research as we plan to investigate the
-spatial heterogeneity of housing prices in Singapore and identify local
-factors that affect house prices.
+Our first article \citep{helbich2013}, ``Spatial Heterogeneity in
+Hedonic House Price Models: The Case of Austria.'' by M. Helbich, C.
+Leitner, and A. Kapusta, investigates the spatial heterogeneity of
+housing prices in Austria by using a hedonic pricing model. This
+statistical model estimates the value of a property based on its
+attributes, size, location, and other factors, such as proximity to
+different amenities (e.g., shopping malls and parks). In this paper, the
+writers apply geographically weighted regression (GWR) analysis to
+identify local spatial patterns of the housing market and examine the
+spatial variability of the hedonic price model coefficients. In their
+research, they deduce that the GWR approach provides more accurate
+predictions of housing prices than traditional regression methods, which
+assume spatial homogeneity of coefficients. Their study revealed that
+housing prices are significantly influenced by local characteristics of
+neighborhoods as accessibility, environment, and social amenities, to
+name a few. Their paper suggests that the spatial heterogeneity of
+housing prices is crucial to accurately model and analyze the housing
+market, especially in geographically diverse regions like Austria. In
+our case, we consider the paper's methodology and insights valuable for
+our research as we plan to investigate the spatial heterogeneity of
+housing prices in Singapore and identify local factors that affect house
+prices.
 
 The second work we will analyze is the
 \href{https://services2.hdb.gov.sg/webapp/BB33RTIS/}{HDB Resale Flat
-Prices} web application developed by the Housing Development Board of
-Singapore. It provides a platform for users to access information on
-past resale transactions of Housing and Development Board (HDB) flats in
-Singapore. It allows users to search for resale transactions based on
-various criteria, such as location, flat type, and transaction period.
-This web application is the perfect example of what Singaporeans are
-missing, a model that explains the relevancy of locational factors on
-HDB resale price. Nonetheless, this web application still serves as a
-relevant solution that offers insights into the Singapore housing market
-and the attributes of HDB flats that may affect transaction prices. We
-believe there is room for improvement in the functionalities the
-platform offers. Through our research, we aim to explore ways to improve
-the current system, perhaps by incorporating additional data sources and
-applying advanced machine learning algorithms to provide an accurate and
-valuable explanatory model of housing prices.
+Prices} \citep{HDBapp} application developed by the Housing Development
+Board of Singapore. It provides a platform for users to access
+information on past resale transactions of Housing and Development Board
+(HDB) flats in Singapore. It allows users to search for resale
+transactions based on various criteria, such as location, flat type, and
+transaction period. This web application is the perfect example of what
+Singaporeans are missing, a model that explains the relevancy of
+locational factors on HDB resale price. Nonetheless, this web
+application still serves as a relevant solution that offers insights
+into the Singapore housing market and the attributes of HDB flats that
+may affect transaction prices. We believe there is room for improvement
+in the functionalities the platform offers. Through our research, we aim
+to explore ways to improve the current system, perhaps by incorporating
+additional data sources and applying advanced machine learning
+algorithms to provide an accurate and valuable explanatory model of
+housing prices.
 
-The last piece of reading we shall discuss is the
-\href{https://towardsdatascience.com/predict-the-selling-price-of-hdb-resale-flats-50530391a845}{Medium
-article} ``Predict the Selling Price of HDB Resale Flats'' by Jim Meng
-Kok. It uses machine learning to predict the selling price of HDB resale
-flats in Singapore. The author uses a dataset of HDB resale transactions
-and applies a random forest regression model to predict the resale price
-of HDB flats based on various features, including location, size, age,
-and nearby amenities. The model achieves a high accuracy rate,
-indicating that machine learning methods can effectively predict housing
-prices. The article is relevant to the current research on housing
-prices in Singapore as it highlights the importance of utilizing machine
-learning techniques for predicting prices accurately. While the author
-uses Python in his analysis, we still consider that the insights
+The last piece of reading we shall discuss is the Medium article
+\citep{Kok21} ``Predict the Selling Price of HDB Resale Flats'' by Jim
+Meng Kok. It uses machine learning to predict the selling price of HDB
+resale flats in Singapore. The author uses a dataset of HDB resale
+transactions and applies a random forest regression model to predict the
+resale price of HDB flats based on various features, including location,
+size, age, and nearby amenities. The model achieves a high accuracy
+rate, indicating that machine learning methods can effectively predict
+housing prices. The article is relevant to the current research on
+housing prices in Singapore as it highlights the importance of utilizing
+machine learning techniques for predicting prices accurately. While the
+author uses Python in his analysis, we still consider that the insights
 provided in the article can be valuable for any researcher planning to
 use other programming languages, as R. The findings suggest that
 location and amenities play a significant role in determining housing
@@ -436,597 +411,414 @@ predictions.\\
 \section{\texorpdfstring{\textbf{Design
 Framework}}{Design Framework}}\label{design-framework}}
 
-The primary parameter given to the ``\texttt{acmart}'' document class is
-the \emph{template style} which corresponds to the kind of publication
-or SIG publishing the work. This parameter is enclosed in square
-brackets and is a part of the ``\texttt{documentclass}'' command:
-
-\begin{verbatim}
-  \documentclass[STYLE]{acmart}
-\end{verbatim}
-
-Journals use one of three template styles. All but three ACM journals
-use the ``\texttt{acmsmall}'' template style:
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{acmsmall}: The default journal template style.
-\item
-  \texttt{acmlarge}: Used by JOCCH and TAP.
-\item
-  \texttt{acmtog}: Used by TOG.
-\end{itemize}
-
-The majority of conference proceedings documentation will use the
-``\texttt{cmconf}'' template style.
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{acmconf}: The default proceedings template style.
-\item
-  \texttt{sigchi}: Used for SIGCHI conference articles.
-\item
-  \texttt{sigchi-a}: Used for SIGCHI ``Extended Abstract'' articles.
-\item
-  \texttt{sigplan}: Used for SIGPLAN conference articles.
-\end{itemize}
-
-\hypertarget{demostration---use-case}{%
-\section{Demostration - Use Case}\label{demostration---use-case}}
-
-In addition to specifying the \emph{template style} to be used in
-formatting your work, there are a number of \emph{template parameters}
-which modify some part of the applied template style. A complete list of
-these parameters can be found in the \LaTeX~User's Guide.
-
-Frequently-used parameters, or combinations of parameters, include:
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{anonymous,review}: Suitable for a ``double-blind'' conference
-  submission. Anonymizes the work and includes line numbers. Use with
-  the \texttt{\textbackslash{}acmSubmissionID} command to print the
-  submission's unique ID on each page of the work.
-\item
-  \texttt{authorversion}: Produces a version of the work suitable for
-  posting by the author.
-\item
-  \texttt{screen}: Produces colored hyperlinks.
-\end{itemize}
-
-This document uses the following string as the first command in the
-source file:
-
-\begin{verbatim}
-  \documentclass[manuscript,screen,review]{acmart}
-\end{verbatim}
-
-\hypertarget{modifications}{%
-\section{Modifications}\label{modifications}}
-
-Modifying the template --- including but not limited to: adjusting
-margins, typeface sizes, line spacing, paragraph and list definitions,
-and the use of the \texttt{\textbackslash{}vspace} command to manually
-adjust the vertical spacing between elements of your work --- is not
-allowed.
-
-\textbf{Your document will be returned to you for revision if
-modifications are discovered.}
-
-\hypertarget{discussionconclusion}{%
-\section{\texorpdfstring{\textbf{Discussion/Conclusion}}{Discussion/Conclusion}}\label{discussionconclusion}}
-
-The ``\texttt{acmart}'' document class requires the use of the
-``Libertine'' typeface family. Your \TeX~installation should include
-this set of packages. Please do not substitute other typefaces. The
-``\texttt{lmodern}'' and ``\texttt{ltimes}'' packages should not be
-used, as they will override the built-in typeface families.
-
-\hypertarget{title-information}{%
-\section{Title Information}\label{title-information}}
-
-The title of your work should use capital letters appropriately -
-\url{https://capitalizemytitle.com/} has useful rules for
-capitalization. Use the ``\texttt{title}'' command to define the title
-of your work. If your work has a subtitle, define it with the
-``\texttt{subtitle}'' command. Do not insert line breaks in your title.
-
-If your title is lengthy, you must define a short version to be used in
-the page headers, to prevent overlapping text. The ``\texttt{title}''
-command has a ``short title'' parameter:
-
-\begin{verbatim}
-  \title[short title]{full title}
-\end{verbatim}
-
-\hypertarget{opening---potential-future-work}{%
-\section{\texorpdfstring{\textbf{Opening - Potential Future
-Work}}{Opening - Potential Future Work}}\label{opening---potential-future-work}}
-
-Each author must be defined separately for accurate metadata
-identification. As an exception, multiple authors may share one
-affiliation. Authors' names should not be abbreviated; use full first
-names wherever possible. Include authors' e-mail addresses whenever
-possible.
-
-Grouping authors' names or e-mail addresses, or providing an ``e-mail
-alias,'' as shown below, is not acceptable:
-
-\begin{verbatim}
-  \author{Brooke Aster, David Mehldau}
-  \email{dave,judy,steve@university.edu}
-  \email{firstname.lastname@phillips.org}
-\end{verbatim}
-
-The \texttt{authornote} and \texttt{authornotemark} commands allow a
-note to apply to multiple authors --- for example, if the first two
-authors of an article contributed equally to the work.
-
-If your author list is lengthy, you must define a shortened version of
-the list of authors to be used in the page headers, to prevent
-overlapping text. The following command should be placed just after the
-last \texttt{\textbackslash{}author\{\}} definition:
-
-\begin{verbatim}
-  \renewcommand{\shortauthors}{McCartney, et al.}
-\end{verbatim}
-
-Omitting this command will force the use of a concatenated list of all
-of the authors' names, which may result in overlapping text in the page
-headers.
-
-The article template's documentation, available at
-\url{https://www.acm.org/publications/proceedings-template}, has a
-complete explanation of these commands and tips for their effective use.
-
-Note that authors' addresses are mandatory for journal articles.
-
-\hypertarget{rights-information}{%
-\section{Rights Information}\label{rights-information}}
-
-Authors of any work published by ACM will need to complete a rights
-form. Depending on the kind of work, and the rights management choice
-made by the author, this may be copyright transfer, permission, license,
-or an OA (open access) agreement.
-
-Regardless of the rights management choice, the author will receive a
-copy of the completed rights form once it has been submitted. This form
-contains \LaTeX~commands that must be copied into the source document.
-When the document source is compiled, these commands and their
-parameters add formatted text to several areas of the final document:
-
-\begin{itemize}
-\tightlist
-\item
-  the ``ACM Reference Format'' text on the first page.
-\item
-  the ``rights management'' text on the first page.
-\item
-  the conference information in the page header(s).
-\end{itemize}
-
-Rights information is unique to the work; if you are preparing several
-works for an event, make sure to use the correct set of commands with
-each of the works.
-
-The ACM Reference Format text is required for all articles over one page
-in length, and is optional for one-page articles (abstracts).
-
-\hypertarget{ccs-concepts-and-user-defined-keywords}{%
-\section{CCS Concepts and User-Defined
-Keywords}\label{ccs-concepts-and-user-defined-keywords}}
-
-Two elements of the ``acmart'' document class provide powerful taxonomic
-tools for you to help readers find your work in an online search.
-
-The ACM Computing Classification System ---
-\url{https://www.acm.org/publications/class-2012} --- is a set of
-classifiers and concepts that describe the computing discipline. Authors
-can select entries from this classification system, via
-\url{https://dl.acm.org/ccs/ccs.cfm}, and generate the commands to be
-included in the \LaTeX~source.
-
-User-defined keywords are a comma-separated list of words and phrases of
-the authors' choosing, providing a more flexible way of describing the
-research being presented.
-
-CCS concepts and user-defined keywords are required for for all articles
-over two pages in length, and are optional for one- and two-page
-articles (or abstracts).
-
-\hypertarget{sectioning-commands}{%
-\section{Sectioning Commands}\label{sectioning-commands}}
-
-Your work should use standard \LaTeX~sectioning commands:
-\texttt{section}, \texttt{subsection}, \texttt{subsubsection}, and
-\texttt{paragraph}. They should be numbered; do not remove the numbering
-from the commands.
-
-Simulating a sectioning command by setting the first word or words of a
-paragraph in boldface or italicized text is \textbf{not allowed.}
-
-\hypertarget{tables}{%
-\section{Tables}\label{tables}}
-
-The ``\texttt{acmart}'' document class includes the
-``\texttt{booktabs}'' package --- \url{https://ctan.org/pkg/booktabs}
---- for preparing high-quality tables.
-
-Table captions are placed \emph{above} the table.
-
-Because tables cannot be split across pages, the best placement for them
-is typically the top of the page nearest their initial cite. To ensure
-this proper ``floating'' placement of tables, use the environment
-\textbf{table} to enclose the table's contents and the table caption.
-The contents of the table itself must go in the \textbf{tabular}
-environment, to be aligned properly in rows and columns, with the
-desired horizontal and vertical rules. Again, detailed instructions on
-\textbf{tabular} material are found in the \LaTeX~User's Guide.
-
-Immediately following this sentence is the point at which
-Table~\ref{tbl-freq} is included in the input file; compare the
-placement of the table here with the table in the printed output of this
-document.
-
-\hypertarget{tbl-freq}{}
-\begin{longtable}[]{@{}ccl@{}}
-\caption{\label{tbl-freq}Frequency of Special Characters}\tabularnewline
-\toprule()
-Non-English or Math & Frequency & Comments \\
-\midrule()
-\endfirsthead
-\toprule()
-Non-English or Math & Frequency & Comments \\
-\midrule()
-\endhead
-Ø & 1 in 1,000 & For Swedish names \\
-\(\pi\) & 1 in 5 & Common in math \\
-\$ & 4 in 5 & Used in business \\
-\(\Psi^2_1\) & 1 in 40,000 & Unexplained usage \\
-\bottomrule()
-\end{longtable}
-
-To set a wider table, which takes up the whole width of the page's live
-area, use the environment \textbf{table*} to enclose the table's
-contents and the table caption. As with a single-column table, this wide
-table will ``float'' to a location deemed more desirable. Immediately
-following this sentence is the point at which Table~\ref{tbl-commands}
-is included in the input file; again, it is instructive to compare the
-placement of the table here with the table in the printed output of this
-document.
-
-\hypertarget{tbl-commands}{}
-\begin{longtable}[]{@{}ccl@{}}
-\caption{\label{tbl-commands}Some Typical Commands}\tabularnewline
-\toprule()
-Command & A Number & Comments \\
-\midrule()
-\endfirsthead
-\toprule()
-Command & A Number & Comments \\
-\midrule()
-\endhead
-\texttt{\textbackslash{}author} & 100 & Author \\
-\texttt{\textbackslash{}table} & 300 & For tables \\
-\texttt{\textbackslash{}table*} & 400 & For wider tables \\
-\bottomrule()
-\end{longtable}
-
-Always use midrule to separate table header rows from data rows, and use
-it only for this purpose. This enables assistive technologies to
-recognise table headers and support their users in navigating tables
-more easily.
-
-\hypertarget{math-equations}{%
-\section{Math Equations}\label{math-equations}}
-
-You may want to display math equations in three distinct styles: inline,
-numbered or non-numbered display. Each of the three are discussed in the
-next sections.
-
-\hypertarget{inline-in-text-equations}{%
-\subsection{Inline (In-text) Equations}\label{inline-in-text-equations}}
-
-A formula that appears in the running text is called an inline or
-in-text formula. It is produced by the \textbf{math} environment, which
-can be invoked with the usual
-\texttt{\textbackslash{}begin,\ ...\ \textbackslash{}end} construction
-or with the short form
-\texttt{\textbackslash{}\$\ ...\ \textbackslash{}\$}. You can use any of
-the symbols and structures, from \(\alpha\) to \(\omega\), available in
-\LaTeX\citep{Lamport:LaTeX}; this section will simply show a few
-examples of in-text equations in context. Notice how this equation:
-\(\lim_{n\rightarrow \infty}x=0\), set here in in-line math style, looks
-slightly different when set in display style. (See next section).
-
-\hypertarget{display-equations}{%
-\subsection{Display Equations}\label{display-equations}}
-
-A numbered display equation---one set off by vertical space from the
-text and centered horizontally---is produced by the \textbf{equation}
-environment. An unnumbered display equation is produced by the
-\textbf{displaymath} environment.
-
-Again, in either environment, you can use any of the symbols and
-structures available in \LaTeX@; this section will just give a couple of
-examples of display equations in context. First, consider
-Equation~\ref{eq-oneequation}, shown as an inline equation above:
-
-\begin{equation}\protect\hypertarget{eq-oneequation}{}{
-\lim_{n\rightarrow \infty}x=0
-}\label{eq-oneequation}\end{equation}
-
-Notice how it is formatted somewhat differently in the
-\textbf{displaymath} environment. Now, we'll enter an unnumbered
-equation:
-
-\[\sum_{i=0}^{\infty} x + 1\]
-
-and follow it with Equation~\ref{eq-anotherequation}, another numbered
-equation:
-
-\begin{equation}\protect\hypertarget{eq-anotherequation}{}{
-\sum_{i=0}^{\infty}x_i=\int_{0}^{\pi+2} f
-}\label{eq-anotherequation}\end{equation}
-
-just to demonstrate \LaTeX's able handling of numbering.
-
-\hypertarget{figures}{%
-\section{Figures}\label{figures}}
-
-The ``\texttt{figure}'' environment should be used for figures. One or
-more images can be placed within a figure. If your figure contains
-third-party material, you must clearly identify it as such, as shown in
-the example below.
+The design of our Shiny App tries to follow the data visualization
+general guidelines suggested by Schneiderman's mantra
+\citep{shneiderman}: Overview First, Zoom and Filter, Details on Demand.
+It consists of Eight Different Tabs: About Us, EDA, CorrPlot, Multiple
+Linear Regression, Geographically Weighted Regression, Predicting,
+Interactive Map and Upload File {[}Figure 1{]} Figure~\ref{fig-1}. This
+Navigation Bar is featured throughout all the Shiny App at all time.
+Each of the Features are place in the order where the user is expected
+to navigate in. Each of the Tab Features is own unique set of features,
+however there are 3 major views, map, graphic and tables.
+
+About Us Tab Figure~\ref{fig-1} is an overview of application and
+features no interactivity.
+
+The EDA Tab Figure~\ref{fig-2} features an overview of the entire data
+set that is loaded in the Shiny Model. A Histogram is given to give an
+overview of selected variable of the data set. Key Summaries is also
+provide important information that the user might need, such as the
+summary of the data and the Top 10 towns. This information is given in a
+form of a table. Finally, the entire data is given in the form of the
+table for the user to view the entire data. The Shiny Application
+provide a sidebar, where all the drop downs form are located. We namely
+allow the user to modify the Start Date, End Date and the Room Type. For
+the Histogram, the user is able to select the number of bins, the color
+of the Fill and the data to be displayed.
+
+The Corr Plot Tab Figure~\ref{fig-3} features a Graphic Plot of
+Correlation Plot of the variables. The Correlation Plot is calculated
+based on the columns of the data set.
+
+The Multiple Linear Regression Tab Figure~\ref{fig-4} features graphics
+of the Linear Regression Model. It also features all the various test to
+determine the validity of the Linear Regression Model, such as Linearity
+and Moran I for the Spatial Model. All the outputs are featured as a
+graphic with explanation on what to look out for. The Side Bar Features
+a multi select drop down of all the dependent variables of the data set
+to build the Linear Regression Model. Changing the values in the Multi
+Select will update all the graphics with the exception of Moran I as it
+is computationally intensive. As weight matrix is needed to calculate
+Moran I, as many variables of dnearneight() and nb2listw() function is
+exposed \citep{spdep}.
+
+The Geographically Weighted Regression Tab Figure~\ref{fig-5} features
+graphics of the Geographically Weighted Regression and the explanation
+needed. The current graphics of the GWR Model is not computed
+re-actively as the the computation of the bandwidth and the model is
+computationally intensive. The side bar features as many variables of
+bw.gwr() and gwr.basic() function is exposed \citep{GWmodel}. Two
+buttons named `Generate GWR' and `Use Computed BandWidth' can be used to
+render the graphic re-actively but it will take a long time to load.
+
+The Predict Tab Figure~\ref{fig-6} features a simple graphic of the
+predict values. The side bar provides the ability to toggle between the
+GWR Model or the Linear Regression Model. The GWR Model requires a
+Spatial Model to be uploaded, while the Regression Model requires input
+on a text box, separated by comma.
+
+The Interactive Map Tab Figure~\ref{fig-7} features an interactive Map
+of all the Points in the data set. The user can filter out the Start
+Date, End Date and Room Type of the data set to display. Any columns in
+the data set can be displayed on the interactive map and some options of
+the well know colorbrewer \citep{colorbrewer} is given for the user to
+select. The user can select the classification methods of the points
+from a drop down, based on attributes available from tmap package
+\citep{tmap}. The tab is place towards the end because the interactive
+map is not the main objective of this project but provided the user to
+gain a better understanding of the data.
+
+The Upload File Tab Figure~\ref{fig-8} features a Table that is only
+displayed when the user upload a file. The user can upload a file from
+the sidebar. This tab is placed at the end, as the user should gain a
+better understanding of the ability of our application attempting to
+load their own data.
+
+A combination of these three views along with the ability to build their
+own model based on their own judgement should give the user a great
+control over the data and more power to analyze and explore.
+
+\hypertarget{case-study-of-hdb-resale-flats}{%
+\section{\texorpdfstring{\textbf{Case Study of HDB Resale
+Flats}}{Case Study of HDB Resale Flats}}\label{case-study-of-hdb-resale-flats}}
+
+Singapore, an emerging economy with a thriving real estate market,
+boasts a unique housing landscape that has drawn attention worldwide.
+Indeed, Singapore is one of the few city-states in the world, making it
+a compact and densely populated urban environment. This unique
+characteristic could already be the foundation of a fascinating use case
+for our web app. Yet, what makes Singapore housing so special is the
+government's active role in shaping the market, which has led to the
+development of the Housing and Development Board (HDB) flats -- an
+essential feature of the Singaporean housing landscape.~
+
+Since the 1960s, the Singaporean government has heavily involved itself
+in public housing, and its policies have gained widespread recognition
+for their success. The country's housing policies have been instrumental
+in promoting homeownership and providing affordable housing for its
+citizens. These flats, built and managed by the government, house over
+80\% of the population \citep{Harsh22}, making Singapore's public
+housing program one of the most successful in the world. The HDB flats,
+however, are subject to unique rules and regulations that distinguish
+them from other housing solutions (e.g., private housing), such as
+restrictions on resale and renovation. Thus, understanding the factors
+that drive the prices of HDB resale flats is of great interest. In this
+context, geographically weighted regression analysis is an ideal method
+for examining the spatial heterogeneity of HDB resale prices and
+identifying the local factors that influence them. By considering the
+specific characteristics of each HDB estate and the surrounding
+neighborhoods, we can better understand how various factors, such as
+distance to amenities, transport links, and schools, affect the prices
+of HDB resale flats. With our web app, policymakers, investors, and
+residents can use these insights to make more informed decisions about
+the HDB market.
+
+To analyze the spatial heterogeneity of HDB prices in Singapore, we will
+utilize a variety of variables that capture different aspects of the
+flats and their surrounding areas. These variables include AREA\_SQM,
+LEASE\_YRS, STOREY\_ORDER, and proximity to various amenities such as
+CBD, childcare, eldercare, hawker centers, MRT stations, parks, top
+primary schools, malls, supermarkets, clinics, pharmacies, tourist
+attractions, and libraries. We have sourced this data from websites such
+as data.gov.sg, Wikipedia, LTA Data Mall, and the MOE website, and
+additionally used the OneMap API to retrieve and geocode data. Some data
+preprocessing was necessary as geocoding aspatial fields to convert
+addresses into geographic coordinates. Using geographically weighted
+regression analysis on this rich dataset, we can identify local factors
+that influence the prices of HDB resale flats in different regions of
+Singapore.~
+
+For the sake of limiting the computing power required to run our
+analysis, we shall only focus on HDB resale flat transactions from 2021
+to 2022. This can be done at the EDA Tab, where the user will filter out
+the data into the correct time frame. It would appears that the PRICE
+variable is left-skewed base on the Histogram. Altering the display
+variable to LEASE\_YRS will give a different picture, where the data is
+right-skewed. Key Summaries of the variable such as the median and mean
+will be displayed. The mean of the variable based on towns will be
+displayed as well. From the PRICE variable, the mean is found to be
+526124 and the Central Area has the highest mean PRICE.
+
+The Multiple Linear Regression (MLR) model reveals that most variables
+have a statistically significant effect on housing prices in Singapore
+{[}Figure~\ref{fig-9}{]}. The intercept is estimated to be 1.607e+05,
+indicating that a house with all predictor variables set to zero should
+cost at least \textbf{S\$160,700}. The variables that positively impact
+housing prices are AREA\_SQM, LEASE\_YRS, STOREY\_ORDER, PROX\_PARK,
+NUM\_KNDRGTN, NUM\_ISP\_CLIN, and NUM\_REGISTERED\_PHARM, while the
+variables with a negative impact are PROX\_CBD, PROX\_HAWKER, PROX\_MRT,
+PROX\_MALL, PROX\_SPRMKT, PROX\_PHARMACY, and PROX\_TOURISM. The
+variable PROX\_CLINIC has a p-value of 0.47737 and is not statistically
+significant at a 5\% error level. Meanwhile AGE and PROX\_TOPPRISCH
+since to return a null result. The R-squared value of 0.7381 indicates
+that the model's predictor variables can explain 73.81\% of the variance
+in housing prices. The F-statistic of 3171 with a p-value of \textless{}
+2.2e-16 suggests that the model's overall fit is significant.
+
+We must however understand that Linear Regression Model has a number of
+key assumptions namely: \emph{Linearity, Normality, Homoscedasticity and
+Independence} \citep{ernst2017}\emph{.} We have conducted all of this
+test and have determine that our model satisfy this criteria.
+
+Independence Test is already performed at in the Corr Plot Tab
+Figure~\ref{fig-3}. All variables that are correlated should be remove
+already. We have kept all the variables in our default model for
+demonstration purposes however.
+
+Linearity Test Figure~\ref{fig-10} performed have shown that LEASE\_YRS,
+AGE, PROX\_MRT and PROX\_TOPPRISCH have a VIF more than 10
+
+Homoscedasticity Test Figure~\ref{fig-11} performed have shown that most
+of the residual is scattered around the line, however there are points
+that deviate significantly from the line.
+
+Normality Test Figure~\ref{fig-12} performed have shown that most of the
+residual resembles a Normal Distribution Curve.
+
+Furthermore, in this study, we conducted a global Moran's I test to
+assess the presence of spatial autocorrelation in housing prices in
+Singapore. Our results showed a Moran I statistic standard deviate of
+1122.3 and a p-value smaller than 2.2e-16 Figure~\ref{fig-13},
+indicating strong evidence of spatial autocorrelation in resale HDB
+flats. Specifically, our observed Moran I was 0.217. It is significantly
+higher than the expected value under spatial randomness. It demonstrates
+the significance of spatial autocorrelation in housing prices in
+Singapore, and we should consider it for several reasons.
+
+First, it suggests that housing prices in some regions of the city-state
+are not independent and that the prices of nearby properties may
+influence resale value. It means that traditional regression techniques,
+which assume independence between observations, may need to be revised
+for modeling housing prices in Singapore.
+
+Moreover, spatial autocorrelation can reveal the underlying spatial
+structure of housing prices in Singapore, including spatial patterns and
+trends. Understanding these patterns can provide valuable insights into
+the factors that drive housing prices in different parts of the country.
+Empirical evidence also supports the relevance of spatial
+autocorrelation in housing prices. For example, a study by Wong and
+Leung \citep{chunwah2011} found significant spatial autocorrelation in
+housing prices in Hong Kong and suggested that spatial models, such as
+geographically weighted regression, could improve the accuracy of price
+predictions.
+
+While the MLR model provides valuable insights into the relationship
+between the predictor variables and housing prices, it does not consider
+the spatial variation in the data. Therefore, it may need to capture the
+heterogeneity observed in different regions of Singapore fully. To
+address this issue, we will employ a geographically weighted regression
+(GWR) model, allowing us to examine how the relationship between the
+predictor variables and housing prices varies spatially across different
+regions of Singapore.
+
+A GWR Model is build using the exact same data set which result in a
+R-Squared value of -22174.95 Figure~\ref{fig-14}. This is likely due to
+the fact that the model used was not fine tuned at all. When the same
+data set is used by Megan and Aisyah, such model produced a R-squared
+value of 0.9 and greater \citep{sim23} \citep{Aisyah}. This shows that
+the model has the potential to be significantly better than the
+Regression Model when proper tuning is performed.
+
+This case study have shown that with the available data, the user is
+able to gain insights on the data through the EDA. The user is able to
+make use of the interactive nature of the Shiny Application to focus on
+a specific variable of interest and make a judgement on whether the
+variable should be included in the model. The user can reference the
+CorrPlot to gain insights of the relationship between the variable to
+modify the variables used in the Linear Regression Model, which the user
+can see the changes in real time. Test for the Model will also be
+updated in real time. If the user chose, a model based on the selected
+variable can be built in real time as well. This will definitely
+encourage the user to explore the data and fine tune the Model for more
+in depth exploration and Analysis.
+
+\hypertarget{conclusion}{%
+\section{\texorpdfstring{\textbf{Conclusion}}{Conclusion}}\label{conclusion}}
+
+In conclusion, we have demonstrated the ability to use Shiny in
+development an application to create an explanatory model for HDB Resale
+Price. More importantly, we have shown that building a Geographically
+Weighted Linear Regression Model for HDB Resale Prices is possible with
+proper fine tuning.
+
+\hypertarget{potential-future-work}{%
+\section{\texorpdfstring{\textbf{Potential Future
+Work}}{Potential Future Work}}\label{potential-future-work}}
+
+Our Model can be expanded in number of key areas as the potential for
+the application to grow is large.
+
+Firstly, we can expand the scope of the project to encompass the Private
+Properties and the introduction of new geographical variable as well.
+The addition of Private Properties prices will give a more complete view
+of the housing situation in Singapore. The data for private properties
+are not publicly available and the inclusion can result in a much better
+models. The addition of geographical data as well can also be critical
+as geographical data of interesting variables such as Hospital, Tourist
+Attraction has not be included in the loaded model. The inclusion of
+such geographical data into the data set can give more insights to the
+user as it may review surprising relationship.
+
+Lastly, we can expand the number of models that the project uses as
+well. In this project only Linear Regression Model and Geographically
+Weighted Regression is used. Models such as Geographically Weighted
+Regression Trees can be introduced for the user to further compare and
+contrast. Some of these possible enhancements could be taken up in the
+near future.
+
+\hypertarget{appendices-and-figures}{%
+\section{Appendices and Figures}\label{appendices-and-figures}}
 
 \begin{figure}
-{\centering \includegraphics{sample-franklin.png}}
-\caption{1907 Franklin Model D roadster. Photograph by Harris \& Ewing,
-Inc.~{[}Public domain{]}, via Wikimedia Commons.
-(\url{https://goo.gl/VLCRBB}).}
-\Description{A woman and a girl in white dresses sit in an open car.}
+
+{\centering \includegraphics{images/Screenshot 2023-04-14 at 11.08.12 PM.png}
+
+}
+
+\caption{\label{fig-1}About Us Tab}
+
 \end{figure}
 
-Your figures should contain a caption which describes the figure to the
-reader.
+\begin{figure}
 
-Figure captions are placed \emph{below} the figure.
+{\centering \includegraphics{images/Screenshot 2023-04-14 at 11.34.06 PM.png}
 
-Every figure should also have a figure description unless it is purely
-decorative. These descriptions convey what's in the image to someone who
-cannot see it. They are also used by search engine crawlers for indexing
-images, and when images cannot be loaded.
+}
 
-A figure description must be unformatted plain text less than 2000
-characters long (including spaces). \textbf{Figure descriptions should
-not repeat the figure caption -- their purpose is to capture important
-information that is not already provided in the caption or the main text
-of the paper.} For figures that convey important and complex new
-information, a short text description may not be adequate. More complex
-alternative descriptions can be placed in an appendix and referenced in
-a short figure description. For example, provide a data table capturing
-the information in a bar chart, or a structured list representing a
-graph. For additional information regarding how best to write figure
-descriptions and why doing this is so important, please see
-\url{https://www.acm.org/publications/taps/describing-figures/}.
+\caption{\label{fig-2}EDA Tab}
 
-\hypertarget{the-teaser-figure}{%
-\subsection{The ``Teaser Figure''}\label{the-teaser-figure}}
+\end{figure}
 
-A ``teaser figure'' is an image, or set of images in one figure, that
-are placed after all author and affiliation information, and before the
-body of the article, spanning the page. If you wish to have such a
-figure in your article, place the command immediately before the
-\texttt{\textbackslash{}maketitle} command:
+\begin{figure}
 
-\begin{verbatim}
-  \begin{teaserfigure}
-    \includegraphics[width=\textwidth]{sampleteaser}
-    \caption{figure caption}
-    \Description{figure description}
-  \end{teaserfigure}
-\end{verbatim}
+{\centering \includegraphics{images/Screenshot 2023-04-14 at 11.41.50 PM.png}
 
-\hypertarget{citations-and-bibliographies}{%
-\section{Citations and
-Bibliographies}\label{citations-and-bibliographies}}
+}
 
-The use of \BibTeX~for the preparation and formatting of one's
-references is strongly recommended. Authors' names should be complete
---- use full first names (``Donald E. Knuth'') not initials (``D. E.
-Knuth'') --- and the salient identifying features of a reference should
-be included: title, year, volume, number, pages, article DOI, etc.
+\caption{\label{fig-3}CorrPlot Tab}
 
-The bibliography is included in your source document with these two
-commands, placed just before the
-\textbackslash verb\textbar\textbackslash end\{document\}\textbar{}
-command:
+\end{figure}
 
-\begin{verbatim}
-  \bibliographystyle{ACM-Reference-Format}
-  \bibliography{bibfile}
-\end{verbatim}
+\begin{figure}
 
-where ``\texttt{bibfile}'' is the name, without the ``\texttt{.bib}''
-suffix, of the \BibTeX~file.
+{\centering \includegraphics{images/Screenshot 2023-04-14 at 11.42.39 PM.png}
 
-Citations and references are numbered by default. A small number of ACM
-publications have citations and references formatted in the ``author
-year'' style; for these exceptions, please include this command in the
-\textbf{preamble} (before the command
-``\texttt{\textbackslash{}begin\{document\}}'') of your \LaTeX~source:
+}
 
-\begin{verbatim}
-  \citestyle{acmauthoryear}
-\end{verbatim}
+\caption{\label{fig-4}MLR Tab}
 
-Some examples. A paginated journal article \citep{Abril07}, an
-enumerated journal article \citep{Cohen07}, a reference to an entire
-issue \citep{JCohen96}, a monograph (whole book) \citep{Kosiur01}, a
-monograph/whole book in a series (see 2a in spec. document)
-\citep{Harel79}, a divisible-book such as an anthology or compilation
-\citep{Editor00} followed by the same example, however we only output
-the series if the volume number is given \citep{Editor00a} (so
-Editor00a's series should NOT be present since it has no vol.~no.), a
-chapter in a divisible book \citep{Spector90}, a chapter in a divisible
-book in a series \citep{Douglass98}, a multi-volume work as book
-\citep{Knuth97}, a couple of articles in a proceedings (of a conference,
-symposium, workshop for example) (paginated proceedings article)
-\citep[\citet{Hagerup1993}]{Andler79}, a proceedings article with all
-possible elements \citep{Smith10}, an example of an enumerated
-proceedings article \citep{VanGundy07}, an informally published work
-\citep{Harel78}, a couple of preprints
-\citep[\citet{AnzarootPBM14}]{Bornmann2019}, a doctoral dissertation
-\citep{Clarkson85}, a master's thesis: \citep{anisi03}, an online
-document / world wide web resource \citep[\citet{Ablamowicz07},
-\citet{Poker06}]{Thornburg01}, a video game (Case 1) \citep{Obama08} and
-(Case 2)\citep{Novak03} and \citep{Lee05} and (Case 3) a patent
-\citep{JoeScientist001}, work accepted for publication \citep{rous08},
-`YYYYb'-test for prolific author \citep{SaeediMEJ10} and
-\citep{SaeediJETC10}. Other cites might contain `duplicate' DOI and URLs
-(some SIAM articles) \citep{Kirschmer-2010-AEI-1958016-1958018}. Boris /
-Barbara Beeton: multi-volume works as books \citep{MR781536} and
-\citep{MR781537}. A couple of citations with DOIs:
-\citep[\citet{Kirschmer-2010-AEI-1958016-1958018}]{2004-ITE-1009386-1010128}.
-Online citations: \citep[\citet{Thornburg01},
-\citet{CTANacmart}]{TUGInstmem}. Artifacts: \citep{R} and
-\citep{UMassCitations}.
+\end{figure}
 
-\hypertarget{acknowledgments}{%
-\section{Acknowledgments}\label{acknowledgments}}
+\begin{figure}
 
-Identification of funding sources and other support, and thanks to
-individuals and groups that assisted in the research and the preparation
-of the work should be included in an acknowledgment section, which is
-placed just before the reference section in your document.
+{\centering \includegraphics{images/Screenshot 2023-04-14 at 11.57.14 PM.png}
 
-This section has a special environment:
+}
 
-\begin{verbatim}
-  \begin{acks}
-  ...
-  \end{acks}
-\end{verbatim}
+\caption{\label{fig-5}GWR Tab}
 
-so that the information contained therein can be more easily collected
-during the article metadata extraction phase, and to ensure consistency
-in the spelling of the section heading.
+\end{figure}
 
-Authors should not prepare this section as a numbered or unnumbered
-\texttt{\textbackslash{}section}; please the
-``\texttt{\textbackslash{}acks}'' environment.
+\begin{figure}
 
-\hypertarget{appendices}{%
-\section{Appendices}\label{appendices}}
+{\centering \includegraphics{images/Screenshot 2023-04-15 at 12.01.01 AM.png}
 
-If your work needs an appendix, add it before the
-``\texttt{\textbackslash{}end\{document\}}'' command at the conclusion
-of your source document.
+}
 
-Start the appendix with the ``\texttt{appendix}'' command:
+\caption{\label{fig-6}Predicting Tab}
 
-\begin{verbatim}
-  \appendix
-\end{verbatim}
+\end{figure}
 
-and note that in the appendix, sections are lettered, not numbered. This
-document has two appendices, demonstrating the section and subsection
-identification method.
+\begin{figure}
 
-\hypertarget{multi-language-papers}{%
-\section{Multi-language papers}\label{multi-language-papers}}
+{\centering \includegraphics{images/Screenshot 2023-04-15 at 12.06.50 AM.png}
 
-Papers may be written in languages other than English or include titles,
-subtitles, keywords and abstracts in different languages (as a rule, a
-paper in a language other than English should include an English title
-and an English abstract). Use \texttt{language=...} for every language
-used in the paper. The last language indicated is the main language of
-the paper. For example, a French paper with additional titles and
-abstracts in English and German may start with the following command
+}
 
-\begin{verbatim}
-  \documentclass[sigconf, language=english, language=german,
-                 language=french]{acmart}
-\end{verbatim}
+\caption{\label{fig-7}Interactive Map}
 
-The title, subtitle, keywords and abstract will be typeset in the main
-language of the paper. The commands
-\texttt{\textbackslash{}translatedXXX}, \texttt{XXX} being
-\texttt{title}, \texttt{subtitle} and \texttt{keywords}, can be used to
-set these elements in the other languages. The environment
-\texttt{translatedabstract} is used to set the translation of the
-abstract. These commands and environment have a mandatory first
-argument: the language of the second argument. See
-\texttt{sample-sigconf-i13n.tex} file for examples of their usage.
+\end{figure}
 
-\hypertarget{sigchi-extended-abstracts}{%
-\section{SIGCHI Extended Abstracts}\label{sigchi-extended-abstracts}}
+\begin{figure}
 
-The ``\texttt{sigchi-a}'' template style (available only in \LaTeX~and
-not in Word) produces a landscape-orientation formatted article, with a
-wide left margin. Three environments are available for use with the
-``\texttt{sigchi-a}'' template style, and produce formatted output in
-the margin:
+{\centering \includegraphics{images/Screenshot 2023-04-14 at 11.20.47 PM.png}
 
-\begin{itemize}
-\tightlist
-\item
-  \textbf{\texttt{sidebar}}: Place formatted text in the margin.
-\item
-  \textbf{\texttt{marginfigure}}: Place a figure in the margin.
-\item
-  \textbf{\texttt{margintable}}: Place a table in the margin.
-\end{itemize}
+}
 
-\begin{acks}
-To Robert, for the bagels and explaining CMYK and color spaces.
-\end{acks}
+\caption{\label{fig-8}Upload Tab}
 
-\bibliographystyle{ACM-Reference-Format}
-\bibliography{bibliography.bib}
+\end{figure}
 
-\hypertarget{refs}{}
-\begin{CSLReferences}{0}{0}
-\end{CSLReferences}
+\begin{figure}
 
-\appendix
+{\centering \includegraphics{images/Screenshot 2023-04-15 at 10.52.59 PM.png}
 
-\hypertarget{research-methods}{%
-\section{Research Methods}\label{research-methods}}
+}
 
-\hypertarget{part-one}{%
-\subsection{Part One}\label{part-one}}
+\caption{\label{fig-9}Linear Regression Score}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
-malesuada, quam in pulvinar varius, metus nunc fermentum urna, id
-sollicitudin purus odio sit amet enim. Aliquam ullamcorper eu ipsum vel
-mollis. Curabitur quis dictum nisl. Phasellus vel semper risus, et
-lacinia dolor. Integer ultricies commodo sem nec semper.
+\end{figure}
 
-\hypertarget{part-two}{%
-\subsection{Part Two}\label{part-two}}
+\begin{figure}
 
-Etiam commodo feugiat nisl pulvinar pellentesque. Etiam auctor sodales
-ligula, non varius nibh pulvinar semper. Suspendisse nec lectus non
-ipsum convallis congue hendrerit vitae sapien. Donec at laoreet eros.
-Vivamus non purus placerat, scelerisque diam eu, cursus ante. Etiam
-aliquam tortor auctor efficitur mattis.
+{\centering \includegraphics{images/Screenshot 2023-04-15 at 11.02.35 PM.png}
 
-\hypertarget{online-resources}{%
-\section{Online Resources}\label{online-resources}}
+}
 
-Nam id fermentum dui. Suspendisse sagittis tortor a nulla mollis, in
-pulvinar ex pretium. Sed interdum orci quis metus euismod, et sagittis
-enim maximus. Vestibulum gravida massa ut felis suscipit congue. Quisque
-mattis elit a risus ultrices commodo venenatis eget dui. Etiam sagittis
-eleifend elementum.
+\caption{\label{fig-10}Linearity Test}
 
-Nam interdum magna at lectus dignissim, ac dignissim lorem rhoncus.
-Maecenas eu arcu ac neque placerat aliquam. Nunc pulvinar massa et
-mattis lacinia.
+\end{figure}
+
+\begin{figure}
+
+{\centering \includegraphics{images/Screenshot 2023-04-15 at 11.02.44 PM.png}
+
+}
+
+\caption{\label{fig-11}Homoscedasticity (Non Linearity)}
+
+\end{figure}
+
+\begin{figure}
+
+{\centering \includegraphics{images/Screenshot 2023-04-15 at 11.02.51 PM.png}
+
+}
+
+\caption{\label{fig-12}Normal Distribution of LM Model}
+
+\end{figure}
+
+\begin{figure}
+
+{\centering \includegraphics{images/Screenshot 2023-04-15 at 11.00.00 PM-01.png}
+
+}
+
+\caption{\label{fig-13}Moran I Test}
+
+\end{figure}
+
+\begin{figure}
+
+{\centering \includegraphics{images/Screenshot 2023-04-15 at 11.27.38 PM.png}
+
+}
+
+\caption{\label{fig-14}GWModel}
+
+\end{figure}
 
 %% begin pandoc before-bib
 %% end pandoc before-bib

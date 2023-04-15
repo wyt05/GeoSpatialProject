@@ -16,6 +16,16 @@ editor: visual
 
 ## Group Members:
 
-Tan Wen Yang and Hao Xian
+Chen Hao Xian, Tan Wen Yang and Pierre Jean Michel
 
-## Summary:
+## Motivation
+
+With the price of HDB resale flats seeing tremendous growth over the years, and news such as "**HDB resale prices accelerate in Jan as million-dollar deals surge by 42%: SRX, 99.co"** [@Yong23] or **"HDB resale prices rise 2.3% in Q4, slowest increase in 2022"** [@Liew23], Singaporeans face the ever-growing concern as to whether or not they are paying a fair price for their flats. Given the lack of accessibility to geographically weighted models, users may find it difficult to assess what factors impact the resale price of an HDB flat; indeed, current estimators often only consider linear relationships between dependent and independent variables and fail to include geographical predictors in their models, which may limit the ability of one regression to explain HDB resale prices; however, geographically weighted regressions provide a more sophisticated way to model spatial heterogeneity by accounting for the unique characteristics of different neighborhoods.
+
+Despite the advantages of geographically weighted regressions, they can be difficult for casual users without specialized skills to use effectively. Thus, our research comes in handy to give the right tools to Singaporeans as we aim to:
+
+1.  Identify the most significant location-specific variables that affect the resale price of HDB flats in Singapore and quantify their impact on pricing using geographically weighted regression models. By analyzing the relationship between different amenities, such as rail stations, hawker centers, preschools, malls, and mosquito hotspots, we aim to determine which factors have the most significant explanatory power on HDB resale prices and which do not. It will provide valuable insights into the most important factors that homebuyers and sellers should consider when transacting in the HDB resale market.
+
+2.  Develop a user-friendly web application that leverages geographically weighted regression models to estimate the resale value of HDB flats in Singapore for a given area. By inputting location-specific variables such as proximity to rail stations, hawker centers, preschools, malls, and mosquito hotspots, users can receive an estimated resale value for their property. It will provide users with a more accurate estimation of the value of their property, which can help them make better decisions when selling or buying an HDB flat.
+
+3.  Promote transparency and reduce information asymmetry in the HDB resale market by providing an accessible and user-friendly tool for estimating resale values. By making geographically weighted regression models more accessible to the public, we hope to empower homeowners, buyers, and policymakers to make more informed decisions about the HDB resale market. It could ultimately lead to better outcomes for buyers and sellers and help policymakers make more informed decisions about housing affordability, urban planning, and education policy.

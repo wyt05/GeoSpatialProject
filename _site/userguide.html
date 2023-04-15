@@ -90,21 +90,32 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Project Proposal</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./poster.html">
- <span class="menu-text">Poster</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./report/report.pdf">
  <span class="menu-text">Project Report</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link active" href="./userguide.html" aria-current="page">
- <span class="menu-text">User Guide</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-project" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Project</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-project">    
+        <li>
+    <a class="dropdown-item" href="./poster.html">
+ <span class="dropdown-text">Poster</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./GWRProj/DataPreprocessing.html">
- <span class="menu-text">Date Preprocessing for Shiny Model</span></a>
+        <li>
+    <a class="dropdown-item" href="./userguide.html">
+ <span class="dropdown-text">User Guide</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./GWRProj/DataPreprocessing.html">
+ <span class="dropdown-text">Date Preprocessing for Shiny Model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://is415-hdb2023.shinyapps.io/Shiny_app/">
+ <span class="dropdown-text">Shiny Application</span></a>
+  </li>  
+    </ul>
+  </li>
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
           </div> <!-- /navcollapse -->
@@ -134,13 +145,16 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting"><span class="toc-section-number">4.2.1</span>  Troubleshooting</a></li>
   <li><a href="#uploaded-file-size-exceeded" id="toc-uploaded-file-size-exceeded" class="nav-link" data-scroll-target="#uploaded-file-size-exceeded"><span class="toc-section-number">4.2.2</span>  Uploaded File Size Exceeded</a></li>
-  <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda"><span class="toc-section-number">4.2.3</span>  EDA</a></li>
-  <li><a href="#corrplot" id="toc-corrplot" class="nav-link" data-scroll-target="#corrplot"><span class="toc-section-number">4.2.4</span>  CorrPlot</a></li>
-  <li><a href="#multiple-linear-regression" id="toc-multiple-linear-regression" class="nav-link" data-scroll-target="#multiple-linear-regression"><span class="toc-section-number">4.2.5</span>  Multiple Linear Regression</a></li>
-  <li><a href="#geographically-weighted-linear-regression" id="toc-geographically-weighted-linear-regression" class="nav-link" data-scroll-target="#geographically-weighted-linear-regression"><span class="toc-section-number">4.2.6</span>  Geographically Weighted Linear Regression</a></li>
-  <li><a href="#predicting-the-hdb-price." id="toc-predicting-the-hdb-price." class="nav-link" data-scroll-target="#predicting-the-hdb-price."><span class="toc-section-number">4.2.7</span>  Predicting the HDB Price.</a></li>
-  <li><a href="#interactive-map" id="toc-interactive-map" class="nav-link" data-scroll-target="#interactive-map"><span class="toc-section-number">4.2.8</span>  Interactive Map</a></li>
   </ul></li>
+  <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda"><span class="toc-section-number">4.3</span>  EDA</a></li>
+  <li><a href="#corrplot" id="toc-corrplot" class="nav-link" data-scroll-target="#corrplot"><span class="toc-section-number">4.4</span>  CorrPlot</a></li>
+  <li><a href="#multiple-linear-regression" id="toc-multiple-linear-regression" class="nav-link" data-scroll-target="#multiple-linear-regression"><span class="toc-section-number">4.5</span>  Multiple Linear Regression</a>
+  <ul class="collapse">
+  <li><a href="#computing-moran-i" id="toc-computing-moran-i" class="nav-link" data-scroll-target="#computing-moran-i"><span class="toc-section-number">4.5.1</span>  Computing Moran I</a></li>
+  </ul></li>
+  <li><a href="#geographically-weighted-linear-regression" id="toc-geographically-weighted-linear-regression" class="nav-link" data-scroll-target="#geographically-weighted-linear-regression"><span class="toc-section-number">4.6</span>  Geographically Weighted Linear Regression</a></li>
+  <li><a href="#predicting-the-hdb-price." id="toc-predicting-the-hdb-price." class="nav-link" data-scroll-target="#predicting-the-hdb-price."><span class="toc-section-number">4.7</span>  Predicting the HDB Price.</a></li>
+  <li><a href="#interactive-map" id="toc-interactive-map" class="nav-link" data-scroll-target="#interactive-map"><span class="toc-section-number">4.8</span>  Interactive Map</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -174,7 +188,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">April 15, 2023</p>
+      <p class="date-modified">April 16, 2023</p>
     </div>
   </div>
     
@@ -248,52 +262,52 @@ ul.task-list li input[type="checkbox"] {
 <p><img src="images/image-1828195131.png" class="img-fluid"></p>
 <p>The RDS File is too big. Due to the limitations of the shiny app it can only receive RDS file that is 5MB and below.</p>
 </section>
-<section id="eda" class="level3" data-number="4.2.3">
-<h3 data-number="4.2.3" class="anchored" data-anchor-id="eda"><span class="header-section-number">4.2.3</span> EDA</h3>
+</section>
+<section id="eda" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="eda"><span class="header-section-number">4.3</span> EDA</h2>
 <p>This section will show you the critical information of the given data set. All the plots here are dynamic and will update according to the new information given. This section is supposed to highlight more insights about the data before the model is build.</p>
 <p>Adjusting the filters here will have an effect on the model building.</p>
 <p><img src="images/image-1526870859.png" class="img-fluid"></p>
 </section>
-<section id="corrplot" class="level3" data-number="4.2.4">
-<h3 data-number="4.2.4" class="anchored" data-anchor-id="corrplot"><span class="header-section-number">4.2.4</span> CorrPlot</h3>
+<section id="corrplot" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="corrplot"><span class="header-section-number">4.4</span> CorrPlot</h2>
 <p>The Correlation Plot will need to be done before we build our model. The Correlation Plot is Reactive, meaning that it changes based on the columns of the data given to it. You will need to reference this page again when building your model.</p>
 <p><img src="images/image-332029470.png" class="img-fluid"></p>
 </section>
-<section id="multiple-linear-regression" class="level3" data-number="4.2.5">
-<h3 data-number="4.2.5" class="anchored" data-anchor-id="multiple-linear-regression"><span class="header-section-number">4.2.5</span> Multiple Linear Regression</h3>
+<section id="multiple-linear-regression" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="multiple-linear-regression"><span class="header-section-number">4.5</span> Multiple Linear Regression</h2>
 <p>In This tab the multiple Linear Regression is build here. You can defined what variables you want to add to the model and what variables you want to. Test are also provided to test the accuracy of the model. With the exception of the Moran I Values, all the other variables are reactive.</p>
 <p><img src="images/image-479391889.png" class="img-fluid"></p>
 <p>If the Correlation Plot is not clear enough, highly correlated Attributes will be displayed as NA in the Linear Regression Plot.</p>
-<section id="computing-moran-i" class="level4" data-number="4.2.5.1">
-<h4 data-number="4.2.5.1" class="anchored" data-anchor-id="computing-moran-i"><span class="header-section-number">4.2.5.1</span> Computing Moran I</h4>
+<section id="computing-moran-i" class="level3" data-number="4.5.1">
+<h3 data-number="4.5.1" class="anchored" data-anchor-id="computing-moran-i"><span class="header-section-number">4.5.1</span> Computing Moran I</h3>
 <p>To Compute Moran I, you will need to set the variables of the Weight Matrix.</p>
 <p><img src="images/image-1213413773.png" class="img-fluid"></p>
 <p>Pressing on Compute Moran will result in the Moran I being calculated in Real Time. Please note that this might take some time to generate a result.</p>
 <p><img src="images/Screenshot 2023-04-14 at 11.48.31 PM.png" class="img-fluid"></p>
 </section>
 </section>
-<section id="geographically-weighted-linear-regression" class="level3" data-number="4.2.6">
-<h3 data-number="4.2.6" class="anchored" data-anchor-id="geographically-weighted-linear-regression"><span class="header-section-number">4.2.6</span> Geographically Weighted Linear Regression</h3>
+<section id="geographically-weighted-linear-regression" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="geographically-weighted-linear-regression"><span class="header-section-number">4.6</span> Geographically Weighted Linear Regression</h2>
 <p>In this tab, a pre calculated model of GWR Model is being displayed. All the Dependent variable should already have been selected in the Multiple Linear Regression Tab.</p>
 <p><img src="images/image-427485800.png" class="img-fluid"></p>
 <p>If you wish to generate your own model, all you need to do is to tune the given parameters. You can choose to generate GWR from the given parameters or calculate an adaptive bandwidth.</p>
 <p>Note that doing either will result in a long loading time.</p>
 <p><img src="images/image-1974336337.png" class="img-fluid"></p>
 </section>
-<section id="predicting-the-hdb-price." class="level3" data-number="4.2.7">
-<h3 data-number="4.2.7" class="anchored" data-anchor-id="predicting-the-hdb-price."><span class="header-section-number">4.2.7</span> Predicting the HDB Price.</h3>
+<section id="predicting-the-hdb-price." class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="predicting-the-hdb-price."><span class="header-section-number">4.7</span> Predicting the HDB Price.</h2>
 <p>In this tab, the user can predict the HDB Prices. You can use either of the models Multiple Linear Regression or the Geographically Weighted Regression.</p>
 <p>For Multiple Linear Regression you can just input the value based on the model that you have build. Please follow order given. The values that are input should be given separated by a comma.</p>
 <p>For Geographically Weighted Regression, please upload a Spatial Data frame for it to predict. However, prediction for this model will build an entirely new model to predict the values. This will take even longer to load the results out.</p>
 <p><img src="images/image-1367324794.png" class="img-fluid"></p>
 </section>
-<section id="interactive-map" class="level3" data-number="4.2.8">
-<h3 data-number="4.2.8" class="anchored" data-anchor-id="interactive-map"><span class="header-section-number">4.2.8</span> Interactive Map</h3>
+<section id="interactive-map" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="interactive-map"><span class="header-section-number">4.8</span> Interactive Map</h2>
 <p>You can view an interactive map of all the data points. Find out where the HDB is and how the range of the price in this map. To prevent tmap from crashing in the shiny app, we have limited the maximum amount of points that will be displayed. Tmap is interactive and you can alter the variables</p>
 <p><img src="images/image-402058854.png" class="img-fluid"></p>
 
 
-</section>
 </section>
 </section>
 
