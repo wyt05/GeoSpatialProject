@@ -250,12 +250,17 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-A clear and well-documented \LaTeX~document is presented as an article
-formatted for publication by ACM in a conference proceedings or journal
-publication. Based on the ``acmart'' document class, this article
-presents and explains many of the common variations, as well as many of
-the formatting elements an author may use in the preparation of the
-documentation of their work.    
+\textbf{Abstract} This research aims to provide Singaporeans with a
+better understanding of the factors impacting the resale price of HDB
+flats, given the lack of accessible geographically weighted models. The
+study uses geographically weighted regression models to identify the
+most significant location-specific variables affecting resale prices,
+such as proximity to rail stations, hawker centers, preschools, mall,
+and etc. Furthermore, a user-friendly web application has been developed
+to estimate the resale value of HDB flats based on these variables. This
+tool will help homeowners, buyers, and policymakers make more informed
+decisions about the HDB resale market and ultimately lead to better
+outcomes.    
 \end{abstract}
 
 %%
@@ -308,20 +313,20 @@ to Singaporeans as we aim to:
   the resale price of HDB flats in Singapore and quantify their impact
   on pricing using geographically weighted regression models. By
   analyzing the relationship between different amenities, such as rail
-  stations, hawker centers, preschools, malls, and mosquito hotspots, we
-  aim to determine which factors have the most significant explanatory
-  power on HDB resale prices and which do not. It will provide valuable
-  insights into the most important factors that homebuyers and sellers
-  should consider when transacting in the HDB resale market.
+  stations, hawker centers, preschools, malls, and more. We aim to
+  determine which factors have the most significant explanatory power on
+  HDB resale prices and which do not. It will provide valuable insights
+  into the most important factors that home buyers and sellers should
+  consider when transacting in the HDB resale market.
 \item
   Develop a user-friendly web application that leverages geographically
   weighted regression models to estimate the resale value of HDB flats
   in Singapore for a given area. By inputting location-specific
   variables such as proximity to rail stations, hawker centers,
-  preschools, malls, and mosquito hotspots, users can receive an
-  estimated resale value for their property. It will provide users with
-  a more accurate estimation of the value of their property, which can
-  help them make better decisions when selling or buying an HDB flat.
+  preschools, malls, and etc. users can receive an estimated resale
+  value for their property. It will provide users with a more accurate
+  estimation of the value of their property, which can help them make
+  better decisions when selling or buying an HDB flat.
 \item
   Promote transparency and reduce information asymmetry in the HDB
   resale market by providing an accessible and user-friendly tool for
@@ -552,7 +557,7 @@ displayed as well. From the PRICE variable, the mean is found to be
 
 The Multiple Linear Regression (MLR) model reveals that most variables
 have a statistically significant effect on housing prices in Singapore
-{[}Figure~\ref{fig-9}{]}. The intercept is estimated to be 1.607e+05,
+Figure~\ref{fig-9}. The intercept is estimated to be 1.607e+05,
 indicating that a house with all predictor variables set to zero should
 cost at least \textbf{S\$160,700}. The variables that positively impact
 housing prices are AREA\_SQM, LEASE\_YRS, STOREY\_ORDER, PROX\_PARK,
@@ -646,11 +651,19 @@ in depth exploration and Analysis.
 \hypertarget{conclusion}{%
 \section{\texorpdfstring{\textbf{Conclusion}}{Conclusion}}\label{conclusion}}
 
-In conclusion, we have demonstrated the ability to use Shiny in
-development an application to create an explanatory model for HDB Resale
-Price. More importantly, we have shown that building a Geographically
-Weighted Linear Regression Model for HDB Resale Prices is possible with
-proper fine tuning.
+In conclusion, the research aims to provide Singaporeans with a
+user-friendly tool to estimate the resale value of HDB flats using
+geographically weighted regression models. The study will identify the
+most significant location-specific variables that affect the resale
+price of HDB flats in Singapore and quantify their impact on pricing.
+The research also promotes transparency and reduces information
+asymmetry in the HDB resale market by providing an accessible tool for
+estimating resale values. The study builds on the past research done in
+the field of hedonic housing price models and emphasizes the importance
+of geography in these models. The insights gained from this study could
+help homeowners, buyers, and policymakers make more informed decisions
+about the HDB resale market, ultimately leading to better outcomes for
+all parties involved.
 
 \hypertarget{potential-future-work}{%
 \section{\texorpdfstring{\textbf{Potential Future
@@ -677,8 +690,8 @@ Regression Trees can be introduced for the user to further compare and
 contrast. Some of these possible enhancements could be taken up in the
 near future.
 
-\hypertarget{appendices-and-figures}{%
-\section{Appendices and Figures}\label{appendices-and-figures}}
+\hypertarget{appendices}{%
+\section{Appendices}\label{appendices}}
 
 \begin{figure}
 
@@ -819,6 +832,10 @@ near future.
 \caption{\label{fig-14}GWModel}
 
 \end{figure}
+
+\bibliographystyle{ACM-Reference-Format}
+
+\bibliography{bibliography.bib}
 
 %% begin pandoc before-bib
 %% end pandoc before-bib
