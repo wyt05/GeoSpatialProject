@@ -427,10 +427,10 @@ Each of the Features are place in the order where the user is expected
 to navigate in. Each of the Tab Features is own unique set of features,
 however there are 3 major views, map, graphic and tables.
 
-About Us Tab Figure~\ref{fig-1} is an overview of application and
+About Us Tab (Figure~\ref{fig-1}) is an overview of application and
 features no interactivity.
 
-The EDA Tab Figure~\ref{fig-2} features an overview of the entire data
+The EDA Tab (Figure~\ref{fig-2}) features an overview of the entire data
 set that is loaded in the Shiny Model. A Histogram is given to give an
 overview of selected variable of the data set. Key Summaries is also
 provide important information that the user might need, such as the
@@ -442,23 +442,23 @@ allow the user to modify the Start Date, End Date and the Room Type. For
 the Histogram, the user is able to select the number of bins, the color
 of the Fill and the data to be displayed.
 
-The Corr Plot Tab Figure~\ref{fig-3} features a Graphic Plot of
+The Corr Plot Tab (Figure~\ref{fig-3}) features a Graphic Plot of
 Correlation Plot of the variables. The Correlation Plot is calculated
 based on the columns of the data set.
 
-The Multiple Linear Regression Tab Figure~\ref{fig-4} features graphics
-of the Linear Regression Model. It also features all the various test to
-determine the validity of the Linear Regression Model, such as Linearity
-and Moran I for the Spatial Model. All the outputs are featured as a
-graphic with explanation on what to look out for. The Side Bar Features
-a multi select drop down of all the dependent variables of the data set
-to build the Linear Regression Model. Changing the values in the Multi
-Select will update all the graphics with the exception of Moran I as it
-is computationally intensive. As weight matrix is needed to calculate
-Moran I, as many variables of dnearneight() and nb2listw() function is
-exposed \citep{spdep}.
+The Multiple Linear Regression Tab (Figure~\ref{fig-4}) features
+graphics of the Linear Regression Model. It also features all the
+various test to determine the validity of the Linear Regression Model,
+such as Linearity and Moran I for the Spatial Model. All the outputs are
+featured as a graphic with explanation on what to look out for. The Side
+Bar Features a multi select drop down of all the dependent variables of
+the data set to build the Linear Regression Model. Changing the values
+in the Multi Select will update all the graphics with the exception of
+Moran I as it is computationally intensive. As weight matrix is needed
+to calculate Moran I, as many variables of dnearneight() and nb2listw()
+function is exposed \citep{spdep}.
 
-The Geographically Weighted Regression Tab Figure~\ref{fig-5} features
+The Geographically Weighted Regression Tab (Figure~\ref{fig-5}) features
 graphics of the Geographically Weighted Regression and the explanation
 needed. The current graphics of the GWR Model is not computed
 re-actively as the the computation of the bandwidth and the model is
@@ -467,13 +467,13 @@ bw.gwr() and gwr.basic() function is exposed \citep{GWmodel}. Two
 buttons named `Generate GWR' and `Use Computed BandWidth' can be used to
 render the graphic re-actively but it will take a long time to load.
 
-The Predict Tab Figure~\ref{fig-6} features a simple graphic of the
+The Predict Tab (Figure~\ref{fig-6}) features a simple graphic of the
 predict values. The side bar provides the ability to toggle between the
 GWR Model or the Linear Regression Model. The GWR Model requires a
 Spatial Model to be uploaded, while the Regression Model requires input
 on a text box, separated by comma.
 
-The Interactive Map Tab Figure~\ref{fig-7} features an interactive Map
+The Interactive Map Tab (Figure~\ref{fig-7}) features an interactive Map
 of all the Points in the data set. The user can filter out the Start
 Date, End Date and Room Type of the data set to display. Any columns in
 the data set can be displayed on the interactive map and some options of
@@ -484,7 +484,7 @@ from a drop down, based on attributes available from tmap package
 map is not the main objective of this project but provided the user to
 gain a better understanding of the data.
 
-The Upload File Tab Figure~\ref{fig-8} features a Table that is only
+The Upload File Tab (Figure~\ref{fig-8}) features a Table that is only
 displayed when the user upload a file. The user can upload a file from
 the sidebar. This tab is placed at the end, as the user should gain a
 better understanding of the ability of our application attempting to
@@ -557,7 +557,7 @@ displayed as well. From the PRICE variable, the mean is found to be
 
 The Multiple Linear Regression (MLR) model reveals that most variables
 have a statistically significant effect on housing prices in Singapore
-Figure~\ref{fig-9}. The intercept is estimated to be 1.607e+05,
+(Figure~\ref{fig-9}). The intercept is estimated to be 1.607e+05,
 indicating that a house with all predictor variables set to zero should
 cost at least \textbf{S\$160,700}. The variables that positively impact
 housing prices are AREA\_SQM, LEASE\_YRS, STOREY\_ORDER, PROX\_PARK,
@@ -577,24 +577,24 @@ Independence} \citep{ernst2017}\emph{.} We have conducted all of this
 test and have determine that our model satisfy this criteria.
 
 Independence Test is already performed at in the Corr Plot Tab
-Figure~\ref{fig-3}. All variables that are correlated should be remove
+(Figure~\ref{fig-3}). All variables that are correlated should be remove
 already. We have kept all the variables in our default model for
 demonstration purposes however.
 
-Linearity Test Figure~\ref{fig-10} performed have shown that LEASE\_YRS,
-AGE, PROX\_MRT and PROX\_TOPPRISCH have a VIF more than 10
+Linearity Test (Figure~\ref{fig-10}) performed have shown that
+LEASE\_YRS, AGE, PROX\_MRT and PROX\_TOPPRISCH have a VIF more than 10
 
-Homoscedasticity Test Figure~\ref{fig-11} performed have shown that most
-of the residual is scattered around the line, however there are points
-that deviate significantly from the line.
+Homoscedasticity Test (Figure~\ref{fig-11}) performed have shown that
+most of the residual is scattered around the line, however there are
+points that deviate significantly from the line.
 
-Normality Test Figure~\ref{fig-12} performed have shown that most of the
-residual resembles a Normal Distribution Curve.
+Normality Test (Figure~\ref{fig-12}) performed have shown that most of
+the residual resembles a Normal Distribution Curve.
 
 Furthermore, in this study, we conducted a global Moran's I test to
 assess the presence of spatial autocorrelation in housing prices in
 Singapore. Our results showed a Moran I statistic standard deviate of
-1122.3 and a p-value smaller than 2.2e-16 Figure~\ref{fig-13},
+1122.3 and a p-value smaller than 2.2e-16 (Figure~\ref{fig-13}),
 indicating strong evidence of spatial autocorrelation in resale HDB
 flats. Specifically, our observed Moran I was 0.217. It is significantly
 higher than the expected value under spatial randomness. It demonstrates
@@ -628,8 +628,8 @@ predictor variables and housing prices varies spatially across different
 regions of Singapore.
 
 A GWR Model is build using the exact same data set which result in a
-R-Squared value of -22174.95 Figure~\ref{fig-14}. This is likely due to
-the fact that the model used was not fine tuned at all. When the same
+R-Squared value of -22174.95 (Figure~\ref{fig-14}). This is likely due
+to the fact that the model used was not fine tuned at all. When the same
 data set is used by Megan and Aisyah, such model produced a R-squared
 value of 0.9 and greater \citep{sim23} \citep{Aisyah}. This shows that
 the model has the potential to be significantly better than the
@@ -651,19 +651,21 @@ in depth exploration and Analysis.
 \hypertarget{conclusion}{%
 \section{\texorpdfstring{\textbf{Conclusion}}{Conclusion}}\label{conclusion}}
 
-In conclusion, the research aims to provide Singaporeans with a
-user-friendly tool to estimate the resale value of HDB flats using
-geographically weighted regression models. The study will identify the
-most significant location-specific variables that affect the resale
-price of HDB flats in Singapore and quantify their impact on pricing.
-The research also promotes transparency and reduces information
-asymmetry in the HDB resale market by providing an accessible tool for
-estimating resale values. The study builds on the past research done in
-the field of hedonic housing price models and emphasizes the importance
-of geography in these models. The insights gained from this study could
-help homeowners, buyers, and policymakers make more informed decisions
-about the HDB resale market, ultimately leading to better outcomes for
-all parties involved.
+We have used geographically weighted regression models to explore the
+spatial variation of HDB resale prices in Singapore and to identify the
+location-specific factors that influence them. We have found that the
+distance to various amenities, such as rail stations, hawker centers,
+preschools, malls, and more, have different effects on HDB resale prices
+depending on the location and that some factors are more relevant than
+others in accounting for the spatial heterogeneity of resale prices. We
+have also created interactive maps to visualize the spatial patterns of
+these factors and their impacts on pricing. Moreover, we have developed
+a user-friendly web application that uses geographically weighted
+regression models to allow users to estimate the fair value of any HDB
+flat based on its location and features. Our web application can assist
+users in making informed choices when buying or selling HDB flats in the
+resale market and also enhance their understanding of the spatial
+dynamics of HDB resale prices in Singapore.
 
 \hypertarget{potential-future-work}{%
 \section{\texorpdfstring{\textbf{Potential Future
@@ -692,6 +694,16 @@ near future.
 
 \hypertarget{appendices}{%
 \section{Appendices}\label{appendices}}
+
+\hypertarget{bibliography}{%
+\subsection{Bibliography}\label{bibliography}}
+
+\bibliographystyle{ACM-Reference-Format}
+
+\bibliography{bibliography.bib}
+
+\hypertarget{figures}{%
+\subsection{Figures}\label{figures}}
 
 \begin{figure}
 
@@ -832,10 +844,6 @@ near future.
 \caption{\label{fig-14}GWModel}
 
 \end{figure}
-
-\bibliographystyle{ACM-Reference-Format}
-
-\bibliography{bibliography.bib}
 
 %% begin pandoc before-bib
 %% end pandoc before-bib
