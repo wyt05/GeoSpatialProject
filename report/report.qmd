@@ -7,7 +7,7 @@ format:
     
 bibliography: bibliography.bib
 
-title: IS415 Report
+title: IS415 Report - Analysis of HDB Resale Prices 
 
 author:
   - name: Chen Hao Xian
