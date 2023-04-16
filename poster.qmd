@@ -1,5 +1,5 @@
 ---
-title: "IS445 Project"
+title: "IS415 Project - Poster"
 author: "Hao Xian, Wen Yang and Pierre Jean Michel"
 date: "`r Sys.Date()`"
 date-modified: '`r Sys.Date()`'

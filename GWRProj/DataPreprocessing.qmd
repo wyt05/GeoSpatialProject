@@ -1,6 +1,7 @@
 ---
-title: "Project Data-preprocessing"
-date: "11 March 2023"
+title: "IS415 - Project Data Preprocessing"
+date: "`r Sys.Date()`"
+date-modified: '`r Sys.Date()`'
 author: "Hao Xian, Wen Yang and Pierre Jean Michel"
 execute: 
   echo: true
@@ -78,7 +79,7 @@ pacman::p_load(sf, tidyverse, tmap, spdep, httr,
 Note that this list is not exhaustive and if you find other point data you can add them as well.
 
 | Type                     | Name                                         | Format | Source                                                                                                      |
-|---------------|---------------|---------------|---------------------------|
+|-------------|-------------|-------------|-----------------------------------|
 | Aspatial                 | Resale Flat Price                            | .csv   | [data.gov.sg](https://data.gov.sg/dataset/resale-flat-prices)                                               |
 | Geospatial               | Singapore National Boundary                  | .shp   | [data.gov.sg](https://data.gov.sg/dataset/national-map-polygon)                                             |
 | Geospatial               | Master Plan 2019 Subzone Boundary (Web)      | .shp   | Prof Kam                                                                                                    |
